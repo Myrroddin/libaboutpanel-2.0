@@ -1,0 +1,7 @@
+package-as: LibAboutPanel-2.0
+
+externals:
+    LibStub: svn://svn.wowace.com/wow/libstub/mainline/trunk
+
+optional-dependencies:
+    - ace3

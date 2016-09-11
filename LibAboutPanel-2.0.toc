@@ -1,0 +1,26 @@
+## Interface: 70000
+## Title: Lib: AboutPanel-2.0
+## Notes: Parses ToC and adds About panel to Interface options
+## Notes-ruRU: @localization(locale="ruRU", key="Description", namespace="ToC")@
+## Notes-deDE: @localization(locale="deDE", key="Description", namespace="ToC")@
+## Notes-koKR: @localization(locale="koKR", key="Description", namespace="ToC")@
+## Notes-esMX: @localization(locale="esMX", key="Description", namespace="ToC")@
+## Notes-esES: @localization(locale="esES", key="Description", namespace="ToC")@
+## Notes-ptBR: @localization(locale="ptBR", key="Description", namespace="ToC")@
+## Notes-zhCN: @localization(locale="zhCN", key="Description", namespace="ToC")@
+## Notes-zhTW: @localization(locale="zhTW", key="Description", namespace="ToC")@
+## Notes-itIT: @localization(locale="itIT", key="Description", namespace="ToC")@
+## Notes-frFR: @localization(locale="frFR", key="Description", namespace="ToC")@
+
+## Version: @project-version@
+## X-Revision: @project-revision@
+## X-Date: @project-date-iso@
+## Author: Paul "Myrroddin" Vandersypen
+## X-Copyright: Public Domain
+## X-Category: Library
+## LoadOnDemand: 1
+## OptionalDeps: LibStub, Ace3
+
+LibStub\LibStub.lua
+
+lib.xml
