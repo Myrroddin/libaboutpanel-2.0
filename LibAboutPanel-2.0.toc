@@ -13,8 +13,9 @@
 ## Notes-frFR: @localization(locale="frFR", key="Notes", namespace="ToC")@
 ## Version: @project-version@
 ## X-Revision: @project-revision@
-## Author: Paul Vandersypen
+## Author: Paul Vandersypen, Artur91425
 ## X-Copyright: Copyright (c) 2019 Paul Vandersypen. All Rights Reserved
 
 LibStub\LibStub.lua
+AceConfig-3.0\AceConfig-3.0.xml
 lib.xml
