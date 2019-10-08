@@ -178,7 +178,19 @@ local function GetLicense(addon)
 end
 
 local function GetLocalizations(addon)
-	return GetAddOnMetadata(addon, "X-Localizations")
+	local translations = GetAddOnMetadata(addon, "X-Localizations")
+	translations = translations:gsub("enUS", LFG_LIST_LANGUAGE_ENUS)
+	translations = translations:gsub("deDE", LFG_LIST_LANGUAGE_DEDE)
+	translations = translations:gsub("frFR", LFG_LIST_LANGUAGE_FRFR)
+	translations = translations:gsub("koKR", LFG_LIST_LANGUAGE_KOKR)
+	translations = translations:gsub("ruRU", LFG_LIST_LANGUAGE_RURU)
+	translations = translations:gsub("itIT", LFG_LIST_LANGUAGE_ITIT)
+	translations = translations:gsub("ptBR", LFG_LIST_LANGUAGE_PTBR)
+	translations = translations:gsub("zhCN", LFG_LIST_LANGUAGE_ZHCN)
+	translations = translations:gsub("zhTW", LFG_LIST_LANGUAGE_ZHTW)
+	translations = translations:gsub("esES", LFG_LIST_LANGUAGE_ESES)
+	translations = translations:gsub("esMX", LFG_LIST_LANGUAGE_ESMX)
+	return translations
 end
 
 local function GetCredits(addon)
