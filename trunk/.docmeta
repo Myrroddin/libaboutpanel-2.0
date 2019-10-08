@@ -1,3 +1,0 @@
-type: luadoc
-input-files: "**/LibAboutPanel-2.0.lua"
-output-page: "API"

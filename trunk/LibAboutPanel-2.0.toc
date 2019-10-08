@@ -1,26 +1,20 @@
-## Interface: 70000
+## Interface: 80200
 ## Title: Lib: AboutPanel-2.0
-## Notes: Parses ToC and adds About panel to Interface options
-## Notes-ruRU: @localization(locale="ruRU", key="Description", namespace="ToC")@
-## Notes-deDE: @localization(locale="deDE", key="Description", namespace="ToC")@
-## Notes-koKR: @localization(locale="koKR", key="Description", namespace="ToC")@
-## Notes-esMX: @localization(locale="esMX", key="Description", namespace="ToC")@
-## Notes-esES: @localization(locale="esES", key="Description", namespace="ToC")@
-## Notes-ptBR: @localization(locale="ptBR", key="Description", namespace="ToC")@
-## Notes-zhCN: @localization(locale="zhCN", key="Description", namespace="ToC")@
-## Notes-zhTW: @localization(locale="zhTW", key="Description", namespace="ToC")@
-## Notes-itIT: @localization(locale="itIT", key="Description", namespace="ToC")@
-## Notes-frFR: @localization(locale="frFR", key="Description", namespace="ToC")@
-
+## Notes: Adds an AddOn's ToC fields to its options table
+## Notes-ruRU: @localization(locale="ruRU", key="Notes", namespace="ToC")@
+## Notes-deDE: @localization(locale="deDE", key="Notes", namespace="ToC")@
+## Notes-koKR: @localization(locale="koKR", key="Notes", namespace="ToC")@
+## Notes-esMX: @localization(locale="esMX", key="Notes", namespace="ToC")@
+## Notes-esES: @localization(locale="esES", key="Notes", namespace="ToC")@
+## Notes-ptBR: @localization(locale="ptBR", key="Notes", namespace="ToC")@
+## Notes-zhCN: @localization(locale="zhCN", key="Notes", namespace="ToC")@
+## Notes-zhTW: @localization(locale="zhTW", key="Notes", namespace="ToC")@
+## Notes-itIT: @localization(locale="itIT", key="Notes", namespace="ToC")@
+## Notes-frFR: @localization(locale="frFR", key="Notes", namespace="ToC")@
 ## Version: @project-version@
 ## X-Revision: @project-revision@
-## X-Date: @project-date-iso@
-## Author: Paul "Myrroddin" Vandersypen
-## X-Copyright: Public Domain
-## X-Category: Library
-## LoadOnDemand: 1
-## OptionalDeps: LibStub, Ace3
+## Author: Paul Vandersypen
+## X-Copyright: Copyright (c) 2019 Paul Vandersypen. All Rights Reserved
 
 LibStub\LibStub.lua
-
 lib.xml
