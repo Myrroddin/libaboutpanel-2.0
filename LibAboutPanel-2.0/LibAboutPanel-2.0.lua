@@ -1,11 +1,11 @@
 --[[
 	Whom is doing what with this library
-	$Date$
-	$Revision$
 	$Author$
 	$URL$
 	$Id$
 	$Header$
+	@class file
+	@name LibAboutPanel-2.0.lua
 ]]--
 
 --- **LibAboutPanel-2.0** either creates an "About" panel in your AddOn's
@@ -39,105 +39,187 @@
 --     }
 --     -- support for LibAboutPanel-2.0
 --     options.args.aboutTab = self:AboutOptionsTable("MyAddOn")
---     options.args.aboutTab.order = 100
+--     options.args.aboutTab.order = -1 -- -1 means "put it last"
 
 --    -- Register your options with AceConfigRegistry
 --    LibStub("AceConfig-3.0"):RegisterOptionsTable("MyAddOn", options)
 -- end
--- @class file
--- @name LibAboutPanel-2.0.lua
--- @release $Id$
+local revision = GetAddOnMetadata("LibAboutPanel-2.0", "X-Revision")
+revision = revision:match("@") and 9999 or tonumber(revision)
+local MAJOR, MINOR = "LibAboutPanel-2.0", revision
+assert(LibStub, MAJOR .. " requires LibStub")
+local AboutPanel = LibStub:NewLibrary(MAJOR, MINOR)
+if not AboutPanel then return end  -- no upgrade necessary
 
-local lib = LibStub:NewLibrary("LibAboutPanel-2.0", "$Revision$")
-if not lib then
-	return -- no upgrade necessary
+AboutPanel.embeds = AboutPanel.embeds or {} -- table containing objects AboutPanel is embedded in.
+AboutPanel.aboutTable = AboutPanel.aboutTable or {} -- tables for
+AboutPanel.aboutFrame = AboutPanel.aboutFrame or {}
+
+-- Lua APIs
+local setmetatable, tostring, rawset, pairs = setmetatable, tostring, rawset, pairs
+-- WoW APIs
+local GetLocale, GetAddOnMetadata, CreateFrame = GetLocale, GetAddOnMetadata, CreateFrame
+
+-- localization ---------------------------------
+local L = setmetatable({}, {
+	__index = function(tab, key)
+		local value = tostring(key)
+		rawset(tab, key, value)
+		return value
+	end
+})
+
+local locale = GetLocale()
+if locale == "koKR" then
+--@localization(locale="koKR", format="lua_additive_table"
+elseif locale == "frFR" then
+--@localization(locale="frFR", format="lua_additive_table"
+elseif locale == "deDE" then
+--@localization(locale="deDE", format="lua_additive_table"
+elseif locale == "ruRU" then
+--@localization(locale="ruRU", format="lua_additive_table"
+elseif locale == "zhTW" then
+--@localization(locale="zhTW", format="lua_additive_table"
+elseif locale == "zhCN" then
+--@localization(locale="zhCN", format="lua_additive_table"
+elseif locale == "itIT" then
+--@localization(locale="itIT", format="lua_additive_table"
+elseif locale == "ptBR" then
+--@localization(locale="ptBR", format="lua_additive_table"
+elseif locale == "esES" or locale == "esMX" then
+--@localization(locale="esES", format="lua_additive_table"
 end
 
 -- handy fuction to create Title Case -----------
--- string.gsub(string, "(%a)([%w_']*)", TitleCase)
-local function TitleCase(first, rest)
-	return first:upper() .. rest:lower()
+local function TitleCase(str)
+	str = str:gsub("(%a)(%a+)", function(a, b) return a:upper()..b:lower() end)
+	return str
 end
 
--- localization ---------------------------------
-local function defaultTranslations(L, key)
-	-- no translation for the key
-	-- so it becomes its own translation
-	return key
-end
-local L = setmetatable({},
-	{__index = defaultTranslations
-})
-
-if GetLocale() == "koKR" then
---@localization(locale="koKR", format="lua_additive_table")@
-elseif GetLocale() == "frFR" then
---@localization(locale="frFR", format="lua_additive_table")@
-elseif GetLocale() == "deDE" then
---@localization(locale="deDE", format="lua_additive_table")@
-elseif GetLocale() == "ruRU" then
---@localization(locale="ruRU", format="lua_additive_table")@
-elseif GetLocale() == "zhTW" then
---@localization(locale="zhTW", format="lua_additive_table")@
-elseif GetLocale() == "zhCN" then
---@localization(locale="zhCN", format="lua_additive_table")@
-elseif GetLocale() == "itIT" then
---@localization(locale="itIT", format="lua_additive_table")@
-elseif GetLocale() == "ptBR" then
---@localization(locale="ptBR", format="lua_additive_table")@
-elseif GetLocale() == "esES" or GetLocale() == "esMX" then
---@localization(locale="esES", format="lua_additive_table")@
+local function GetTitle(addon)
+	local title = "Title"
+	if locale ~= "enUS" then
+		title = title .. "-" .. locale
+	end
+	return GetAddOnMetadata(addon, title) or GetAddOnMetadata(addon, "Title")
 end
 
--- per AddOn options ----------------------------
-local aboutTable = {}
+local function GetNotes(addon)
+	local notes = "Notes"
+	if locale ~= "enUS" then
+		notes = notes .. "-" .. locale
+	end
+	return GetAddOnMetadata(addon, notes) or GetAddOnMetadata(addon, "Notes")
+end
+
+local function GetAddOnDate(addon)
+	local date = GetAddOnMetadata(addon, "X-Date") or GetAddOnMetadata(addon, "X-ReleaseDate")
+	if not date then return end
+
+	date = date:gsub("%$Date: (.-) %$", "%1")
+	date = date:gsub("%$LastChangedDate: (.-) %$", "%1")
+	return date
+end
+
+local function GetAuthor(addon)
+	local author = GetAddOnMetadata(addon, "Author")
+	if not author then return end
+
+	author = TitleCase(author)
+	local server = GetAddOnMetadata(addon, "X-Author-Server")
+	local guild = GetAddOnMetadata(addon, "X-Author-Guild")
+	local faction = GetAddOnMetadata(addon, "X-Author-Faction")
+
+	if server then
+		server = TitleCase(server)
+		author = author .. " " .. L["on the %s realm"]:format(server) .. "."
+	end
+	if guild then
+	author = author .. " " .. "<" .. guild .. ">"
+	end
+	if faction then
+		faction = TitleCase(faction)
+		faction = faction:gsub("Alliance", FACTION_ALLIANCE)
+		faction = faction:gsub("Horde", FACTION_HORDE)
+		author = author .. " " .. "(" .. faction .. ")"
+	end
+	return author
+end
+
+local function GetVersion(addon)
+	local version = GetAddOnMetadata(addon, "Version")
+	if not version then return end
+
+	version = version:gsub("%.?%$Revision: (%d+) %$", " -rev.".."%1")
+	version = version:gsub("%.?%$Rev: (%d+) %$", " -rev.".."%1")
+	version = version:gsub("%.?%$LastChangedRevision: (%d+) %$", " -rev.".."%1")
+
+	-- replace repository keywords
+	version = version:gsub("r2", L["Repository"]) -- Curse
+	version = version:gsub("wowi:revision", L["Repository"]) -- WoWInterface
+
+	local revision = GetAddOnMetadata(addon, "X-Project-Revision")
+	version = revision and version.." -rev."..revision or version
+	return version
+end
+
+local function GetCategory(addon)
+	return GetAddOnMetadata(addon, "X-Category")
+end
+
+local function GetLicense(addon)
+	local license = GetAddOnMetadata(addon, "X-License")
+	if not license then return end
+
+	license = license:gsub("[cC]opyright", "©")
+	license = license:gsub("%([cC]%)", "©")
+	license = license:gsub("[aA]ll [rR]ights [rR]eserved", L["All Rights Reserved"])
+	return license
+end
+
+local function GetLocalizations(addon)
+	return GetAddOnMetadata(addon, "X-Localizations")
+end
+
+local function GetCredits(addon)
+	return GetAddOnMetadata(addon, "X-Credits")
+end
+
+local function GetWebsite(addon)
+	local websites = GetAddOnMetadata(addon, "X-Website")
+	if not websites then return end
+
+	return "|cff77ccff"..websites:gsub("https?://", "")
+end
+
+local function GetEmail(addon)
+	local email = GetAddOnMetadata(addon, "X-Email") or GetAddOnMetadata(addon, "Email") or GetAddOnMetadata(addon, "eMail")
+	if not email then return end
+
+	return "|cff77ccff"..GetAddOnMetadata(addon, "X-Email")
+end
 
 -- LibAboutPanel stuff --------------------------
-local editbox = CreateFrame("EditBox", nil, UIParent)
+local editbox = CreateFrame("EditBox", nil, nil, "InputBoxTemplate")
 editbox:Hide()
-editbox:SetAutoFocus(true)
-editbox:SetHeight(32)
 editbox:SetFontObject("GameFontHighlightSmall")
-lib.editbox = editbox
+AboutPanel.editbox = editbox
 
-local left = editbox:CreateTexture(nil, "BACKGROUND")
-left:SetWidth(8) left:SetHeight(20)
-left:SetPoint("LEFT", -5, 0)
-left:SetTexture("Interface\\Common\\Common-Input-Border")
-left:SetTexCoord(0, 0.0625, 0, 0.625)
-
-local right = editbox:CreateTexture(nil, "BACKGROUND")
-right:SetWidth(8) right:SetHeight(20)
-right:SetPoint("RIGHT", 0, 0)
-right:SetTexture("Interface\\Common\\Common-Input-Border")
-right:SetTexCoord(0.9375, 1, 0, 0.625)
-
-local center = editbox:CreateTexture(nil, "BACKGROUND")
-center:SetHeight(20)
-center:SetPoint("RIGHT", right, "LEFT", 0, 0)
-center:SetPoint("LEFT", left, "RIGHT", 0, 0)
-center:SetTexture("Interface\\Common\\Common-Input-Border")
-center:SetTexCoord(0.0625, 0.9375, 0, 0.625)
-
-editbox:SetScript("OnEscapePressed", editbox.ClearFocus)
-editbox:SetScript("OnEnterPressed", editbox.ClearFocus)
+editbox:SetScript("OnEscapePressed", editbox.Hide)
+editbox:SetScript("OnEnterPressed", editbox.Hide)
 editbox:SetScript("OnEditFocusLost", editbox.Hide)
 editbox:SetScript("OnEditFocusGained", editbox.HighlightText)
 editbox:SetScript("OnTextChanged", function(self)
-	self:SetText(self:GetParent().val)
+	self:SetText(self:GetParent().value)
 	self:HighlightText()
 end)
 
-local function OpenEditbox(self)
-	editbox:SetText(self.val)
+local function OpenEditbox(self, ...)
 	editbox:SetParent(self)
-	editbox:SetPoint("LEFT", self)
-	editbox:SetPoint("RIGHT", self)
+	editbox:SetAllPoints(self)
+	editbox:SetText(self.value)
 	editbox:Show()
 end
-
-local fields = { "Version", "Author", "X-Category", "X-License", "X-Email", "X-Website", "X-Credits", "X-Localizations" }
-local haseditbox = { ["X-Website"] = true, ["X-Email"] = true }
 
 local function HideTooltip()
 	GameTooltip:Hide()
@@ -146,30 +228,6 @@ end
 local function ShowTooltip(self)
 	GameTooltip:SetOwner(self, "ANCHOR_TOPRIGHT")
 	GameTooltip:SetText(L["Click and press Ctrl-C to copy"])
-end
-
--- embedded functions beginning of file code
-lib.embeds = lib.embeds or {}
-local mixins = {
-	"CreateAboutPanel",
-	"AboutOptionsTable"
-}
-
---- Embeds lib on target AddOn
--- So you can call LibStub("LibAboutPanel-2.0"):Embed(myAddOn)
--- @param target AddOn table in which to embed
--- @usage
--- local AddOnName, AddOn = ...
--- LibStub("LibAboutPanel-2.0"):Embed(AddOn)
--- -- **OR**, if using Ace3
--- -- you do not explicitly call :Embed
--- local MyAddOn = LibStub("AceAddon-3.0"):NewAddon("MyAddOn", "LibAboutPanel-2.0")
-function lib:Embed(target)
-	for k, v in pairs(mixins) do
-		target[v] = self[v]
-	end
-	self.embeds[target] = true
-	return target
 end
 
 --- Create a new About panel
@@ -183,19 +241,89 @@ end
 -- @usage local aboutFrame = MyAddOn:CreateAboutPanel("MyAddOn", "MyAddOn")
 -- -- OR
 -- MyAddOn:CreateAboutPanel("MyAddOn", "MyAddOn")
-function lib:CreateAboutPanel(AddOn, parent)
-	-- Remove spaces from AddOn because GetMetadata doesn't like those
-	local gsubName = gsub(AddOn, " ", "")
-	
-	local about = CreateFrame("Frame", nil, UIParent)
-	about.name = not parent and gsubName or L["About"]
-	about.parent = parent
-	about.AddOnName = gsubName
-	about:Hide()
-	about:SetScript("OnShow", OnShow)
-	-- about.refresh = function() OnShow() end
-	InterfaceOptions_AddCategory(about)
-	return about
+function AboutPanel:CreateAboutPanel(addon, parent)
+	addon = addon:gsub(" ", "") -- Remove spaces from AddOn because GetMetadata doesn't like those
+	local addon = parent or addon
+	local frame = self.aboutFrame[addon]
+
+	if not frame then
+		frame = CreateFrame("Frame", addon.."AboutPanel", UIParent)
+
+		local title = GetTitle(addon)
+		local title_str = frame:CreateFontString(nil, "ARTWORK", "GameFontNormalLarge")
+		title_str:SetPoint("TOPLEFT", 16, -16)
+		title_str:SetText((parent and title or addon) .. " - " .. L["About"])
+
+		local notes = GetNotes(addon)
+		local notes_str
+		if notes then
+			notes_str = frame:CreateFontString(nil, "ARTWORK", "GameFontHighlightSmall")
+			notes_str:SetHeight(32)
+			notes_str:SetPoint("TOPLEFT", title_str, "BOTTOMLEFT", 0, -8)
+			notes_str:SetPoint("RIGHT", frame, -32, 0)
+			notes_str:SetNonSpaceWrap(true)
+			notes_str:SetJustifyH("LEFT")
+			notes_str:SetJustifyV("TOP")
+			notes_str:SetText(GetNotes(addon))
+		end
+
+		local i, title, detail = 0, {}, {}
+		local function SetAboutInfo(field, text, editbox)
+			i = i + 1
+			title[i] = frame:CreateFontString(nil, "ARTWORK", "GameFontNormalSmall")
+			if i == 1 then
+				title[i]:SetPoint("TOPLEFT", notes and notes_str or title_str, "BOTTOMLEFT", -2, -12)
+			else
+				title[i]:SetPoint("TOPLEFT", title[i-1], "BOTTOMLEFT", 0, -10)
+			end
+			title[i]:SetWidth(80)
+			title[i]:SetJustifyH("RIGHT")
+			title[i]:SetJustifyV("TOP")
+			title[i]:SetText(field)
+
+			detail[i] = frame:CreateFontString(nil, "ARTWORK", "GameFontHighlightSmall")
+			detail[i]:SetPoint("TOPLEFT", title[i], "TOPRIGHT", 4, 0)
+			detail[i]:SetPoint("RIGHT", frame, -16, 0)
+			detail[i]:SetJustifyH("LEFT")
+			detail[i]:SetJustifyV("TOP")
+			detail[i]:SetText(text)
+
+			if editbox then
+				local button = CreateFrame("Button", nil, frame)
+				button:SetAllPoints(detail[i])
+				button.value = text
+				button:SetScript("OnClick", OpenEditbox)
+				button:SetScript("OnEnter", ShowTooltip)
+				button:SetScript("OnLeave", HideTooltip)
+			end
+		end
+
+		local date = GetAddOnDate(addon)
+		if date then SetAboutInfo(L["Date"], date) end
+		local version = GetVersion(addon)
+		if version then SetAboutInfo(L["Version"], version) end
+		local author = GetAuthor(addon)
+		if author then SetAboutInfo(L["Author"], author) end
+		local category = GetCategory(addon)
+		if category then SetAboutInfo(L["Category"], category) end
+		local license = GetLicense(addon)
+		if license then SetAboutInfo(L["License"], license) end
+		local credits = GetCredits(addon)
+		if credits then SetAboutInfo(L["Credits"], credits) end
+		local email = GetEmail(addon)
+		if email then SetAboutInfo(L["Email"], email, true) end
+		local website = GetWebsite(addon)
+		if website then	SetAboutInfo(L["Website"], website, true) end
+		local localizations = GetLocalizations(addon)
+		if localizations then SetAboutInfo(L["Localizations"], localizations) end
+
+		frame.name = not parent and addon or L["About"]
+		frame.parent = parent
+		InterfaceOptions_AddCategory(frame)
+		self.aboutFrame[addon] = frame
+	end
+
+	return frame
 end
 
 --- Creates a table of an AddOn's ToC fields
@@ -206,296 +334,153 @@ end
 -- @usage -- assuming options is your top-level table
 -- local options = {} -- put your regular stuff here
 -- options.args.aboutTable = MyAddOn:AboutOptionsTable("MyAddOn")
--- options.args.aboutTable.order = 100 -- use any number in the hierarchy
+-- options.args.aboutTable.order = -1 -- use any number in the hierarchy. -1 means "put it last"
 -- LibStub("AceConfig-3.0"):RegisterOptionsTable("MyAddOn", options)
-function lib:AboutOptionsTable(AddOn)
-	assert(LibStub("AceConfig-3.0"), "LibAboutPanel-2.0 API 'AboutOptionsTable' requires AceConfig-3.0", 2)
-	aboutTable[AddOn] = aboutTable[AddOn] or {
-		order = 10,
-		name = L["About"],
-		type = "group",
-		args = {
-			title = {
+function AboutPanel:AboutOptionsTable(addon)
+	assert(LibStub("AceConfig-3.0"), "LibAboutPanel-2.0: API 'AboutOptionsTable' requires AceConfig-3.0", 2)
+	addon = addon:gsub(" ", "") -- Remove spaces from AddOn because GetMetadata doesn't like those
+	local Table = self.aboutTable[addon]
+	if not Table then
+		Table = {
+			name = L["About"],
+			type = "group",
+			args = {
+				title = {
+					order = 1,
+					name = "|cffe6cc80" .. GetTitle(addon) .. "|r",
+					type = "description",
+					fontSize = "large",
+				},
+			},
+		}
+		local notes = GetNotes(addon)
+		if notes then
+			Table.args.blank = {
+				order = 2,
+				name = "",
+				type = "description",
+			}
+			Table.args.notes = {
+				order = 3,
+				name = notes,
+				type = "description",
+				fontSize = "medium",
+			}
+		end
+		Table.args.blank2 = {
+			order = 4,
+			name = "\n",
+			type = "description",
+		}
+		local date = GetAddOnDate(addon)
+		if date then
+			Table.args.date = {
+				order = 5,
+				name = "|cffe6cc80" .. L["Date"] .. ": |r" .. date,
+				type = "description",
+			}
+		end
+		local version = GetVersion(addon)
+		if version then
+			Table.args.version = {
+				order = 6,
+				name = "|cffe6cc80" .. L["Version"] .. ": |r" .. version,
+				type = "description",
+			}
+		end
+		local author = GetAuthor(addon)
+		if author then
+			Table.args.author = {
+				order = 7,
+				name = "|cffe6cc80" .. L["Author"] .. ": |r" .. author,
+				type = "description",
+			}
+		end
+		local category = GetCategory(addon)
+		if category then
+			Table.args.category = {
+				order = 8,
+				name = "|cffe6cc80" .. L["Category"] .. ": |r" .. category,
+				type = "description",
+			}
+		end
+		local license = GetLicense(addon)
+		if license then
+			Table.args.license = {
+				order = 9,
+				name = "|cffe6cc80" .. L["License"] .. ": |r" .. license,
+				type = "description",
+			}
+		end
+		local credits = GetCredits(addon)
+		if credits then
+			Table.args.credits = {
 				order = 10,
-				name = "|cffe6cc80" .. AddOn .. "|r",
+				name = "|cffe6cc80" .. L["Credits"] .. ": |r" .. credits,
 				type = "description",
-				fontSize = "large"
-			},
-			blank = {
-				order = 20,
-				name = "",
-				type = "description"
-			},
-			notes = {
-				order = 30,
-				name = function()
-					local notefield = "Notes"
-					if GetLocale() ~= "enUS" then
-						notefield = notefield .. "-" .. GetLocale()
-					end
-					local notes = GetAddOnMetadata(AddOn, notefield)
-					return "|cffe6cc80" .. L["Notes"] .. ": |r" .. notes
-				end,
-				type = "description",
-				fontSize = "medium"
-			},
-			blank2 = {
-				order = 40,
-				name = "",
-				type = "description"
-			},
-			author = {
-				order = 50,
-				name = function()
-					local author = GetAddOnMetadata(AddOn, "Author")
-					author = string.gsub(author, "(%a)([%w_']*)", TitleCase)
-					local authorservername = GetAddOnMetadata(AddOn, "X-Author-Server")
-					authorservername = string.gsub(authorservername, "(%a)([%w_']*)", TitleCase)
-					local authorfaction = GetAddOnMetadata(AddOn, "X-Author-Faction")
-					authorfaction = string.gsub(authorfaction, "(%a)([%w_']*)", TitleCase)
-					authorfaction = string.gsub(authorfaction, "Alliance", FACTION_ALLIANCE)
-					authorfaction = string.gsub(authorfaction, "Horde", FACTION_HORDE)
-
-					if authorservername and authorfaction then
-						author = string.format(L["%s on the %s realm (%s)"], author, authorservername, authorfaction)
-					elseif authorservername and not authorfaction then
-						author = string.format(L["%s on the %s realm"], author, authorservername)
-					elseif not authorservername and authorfaction then
-						author = (author .. "( " .. authorfaction .. ")")
-					else
-						author = author -- redundancy check
-					end
-					return "|cffe6cc80" .. L["Author"] .. ": |r".. author
-				end,
-				type = "description"
-			},
-			version = {
-				order = 60,
-				name = function()
-					local addonversion = GetAddOnMetadata(AddOn, "Version")
-					-- replace repository keywords
-					addonversion = string.gsub(addonversion, "@project-version@", L["Repository"]) -- Curse
-					addonversion = string.gsub(addonversion, "wowi:revision", L["Repository"]) -- WoWInterface
-					return "|cffe6cc80" .. L["Version"] .. ": |r" .. addonversion
-				end,
-				type = "description"
-			},
-			license = {
-				order = 70,
-				name = function()
-					local copyright = GetAddOnMetadata(AddOn, "X-License") or UNKNOWN
-					-- replace with © if applicable
-					copyright = string.gsub(copyright, "Copyright", "©")
-					copyright = string.gsub(copyright, "copyright", "©")
-					copyright = string.gsub(copyright, "(C)", "©")
-					copyright = string.gsub(copyright, "(c)", "©")
-					copyright = string.gsub(copyright, "All Rights Reserved", L["All Rights Reserved"])
-					return "|cffe6cc80" .. L["License"] .. ": |r" .. copyright
-				end,
-				type = "description"
-			},
-			localizations = {
-				order = 80,
-				name = function()
-					local localizations = GetAddOnMetadata(AddOn, "X-Localizations") or UNKNOWN
-					-- replace with global strings
-					localizations = string.gsub(localizations, "enUS", LFG_LIST_LANGUAGE_ENUS)
-					localizations = string.gsub(localizations, "frFR", LFG_LIST_LANGUAGE_FRFR)
-					localizations = string.gsub(localizations, "deDE", LFG_LIST_LANGUAGE_DEDE)
-					localizations = string.gsub(localizations, "esES", LFG_LIST_LANGUAGE_ESES)
-					localizations = string.gsub(localizations, "esMX", LFG_LIST_LANGUAGE_ESMX)
-					localizations = string.gsub(localizations, "koKR", LFG_LIST_LANGUAGE_KOKR)
-					localizations = string.gsub(localizations, "itIT", LFG_LIST_LANGUAGE_ITIT)
-					localizations = string.gsub(localizations, "ptBR", LFG_LIST_LANGUAGE_PTBR)
-					localizations = string.gsub(localizations, "ruRU", LFG_LIST_LANGUAGE_RURU)
-					localizations = string.gsub(localizations, "zhCN", LFG_LIST_LANGUAGE_ZHCN)
-					localizations = string.gsub(localizations, "zhTW", LFG_LIST_LANGUAGE_ZHTW)
-					return "|cffe6cc80" .. L["Localizations"] .. ": |r" .. localizations
-				end,
-				type = "description"
-			},
-			credits = {
-				order = 90,
-				name = function()
-					return "|cffe6cc80" .. L["Credits"] .. ": |r" .. GetAddOnMetadata(AddOn, "X-Credits") or UNKNOWN
-				end,
-				type = "description"
-			},
-			website = {
-				order = 100,
+			}
+		end
+		local email = GetEmail(addon)
+		if email then
+			Table.args.email = {
+				order = 11,
+				name = "|cffe6cc80" .. L["Email"] .. ": |r",
+				desc = L["Click and press Ctrl-C to copy"],
+				type = "input",
+				width = "full",
+				get = function() return email end,
+			}
+		end
+		local website = GetWebsite(addon)
+		if website then
+			Table.args.website = {
+				order = 12,
 				name = "|cffe6cc80" .. L["Website"] .. ": |r",
 				desc = L["Click and press Ctrl-C to copy"],
 				type = "input",
-				get = function()
-					local website = GetAddOnMetadata(AddOn, "X-Website") or UNKNOWN
-					return (haseditbox["X-Website"] and "|cff77ccff" or "") .. website
-				end,
-				width = "full"
-			},
-			email = {
-				order = 110,
-				name = "|cffe6cc80" .. L["Email"] .. ": |r",
-				desc = L["Click and press Ctrl-C to copy"],
-				get = function()
-					local eMail = GetAddOnMetadata(AddOn, "X-Email") or UNKNOWN
-					eMail = string.gsub(eMail, " at ", "@")
-					eMail = string.gsub(eMail, " dot ", ".")
-					return (haseditbox["X-Email"] and "|cff77ccff" or "") .. eMail
-				end,
-				type = "input",
-				width = "full"
+				width = "full",
+				get = function() return website end,
 			}
-		}
-	}
-	return aboutTable[AddOn]
-end
-
-local function OnShow(frame)
-	-- Get the localized version of notes if it exists or fall back to the English one.
-	local notefield = "Notes"
-	if GetLocale() ~= "enUS" then
-		notefield = notefield .. "-" .. GetLocale()
-	end
-	local notes = GetAddOnMetadata(frame.AddOnName, notefield)
-
-	-- main title about.name or L["About"] ------
-	local title = frame.about_title
-	if not title then
-		title = frame:CreateFontString(nil, "ARTWORK", "GameFontNormalLarge")
-		frame.about_title = title
-	end
-	title:SetPoint("TOPLEFT", 16, -16)
-	title:SetText(frame.parent and (frame.parent .. " - " .. L["About"]) or frame.name)
-
-	-- ToC Notes field --------------------------
-	if not frame.about_subtitle then
-		frame.about_subtitle = frame:CreateFontString(nil, "ARTWORK", "GameFontHighlightSmall")
-	end
-	local subtitle = frame.about_subtitle
-	subtitle:SetHeight(32)
-	subtitle:SetPoint("TOPLEFT", title, "BOTTOMLEFT", 0, -8)
-	subtitle:SetPoint("RIGHT", frame, -32, 0)
-	subtitle:SetNonSpaceWrap(true)
-	subtitle:SetJustifyH("LEFT")
-	subtitle:SetJustifyV("TOP")
-	subtitle:SetText(notes)
-	
-	local anchor
-	for i = 1, #fields do
-		local field = fields[i]
-		local value = GetAddOnMetadata(frame.AddOnName, field)
-		if value then
-			local title = frame[field .. "_title"]
-			if not title then
-				title = frame:CreateFontString(nil, "ARTWORK", "GameFontNormalSmall")
-				frame[field .. "_title"] = title
-			end
-			title:SetWidth(80)
-
-			if not anchor then
-				title:SetPoint("TOPLEFT", subtitle, "BOTTOMLEFT", -2, -12)
-			else
-				title:SetPoint("TOPLEFT", anchor, "BOTTOMLEFT", 0, -10)
-			end
-			title:SetJustifyH("RIGHT")
-			title:SetJustifyV("TOP")
-			-- fix for display
-			-- first strip "X-" from field
-			-- then TitleCase field
-			local fixed_field = field:gsub("X%-", "")
-			fixed_field = string.gsub(fixed_field, "(%a)([%w_']*)", TitleCase)
-			title:SetText(L[fixed_field])
-
-			local detail = frame[field .. "_detail"]
-			if not detail then
-				detail = frame:CreateFontString(nil, "ARTWORK", "GameFontHighlightSmall")
-				frame[field .. "_detail"] = detail
-			end
-			detail:SetPoint("TOPLEFT", title, "TOPRIGHT", 4, 0)
-			detail:SetPoint("RIGHT", frame, -16, 0)
-			detail:SetJustifyH("LEFT")
-			detail:SetJustifyV("TOP")
-
-			if field == "Author" then
-				local authorservername = GetAddOnMetadata(frame.AddOnName, "X-Author-Server")
-				-- Title Case server
-				authorservername = string.gsub(authorservername, "(%a)([%w_']*)", TitleCase)
-				local authorfaction = GetAddOnMetadata(frame.AddOnName, "X-Author-Faction")
-				authorfaction = string.gsub(authorfaction, "(%a)([%w_']*)", TitleCase)
-				-- localize authorfaction -------
-				aauthorfaction = string.gsub(authorfaction, "Alliance", FACTION_ALLIANCE)
-				authorfaction = string.gsub(authorfaction, "Horde", FACTION_HORDE)
-
-				if authorservername and authorfaction then
-					detail:SetFormattedText(L["%s on the %s realm (%s)"], value, authorservername, authorfaction)
-				elseif authorservername and not authorfaction then
-					detail:SetFormattedText(L["%s on the %s realm"], value, authorservername)
-				elseif not authorservername and authorfaction then
-					detail:SetText(value .. "( " .. authorfaction .. ")")
-				else
-					detail:SetText(value)
-				end
-			elseif field == "Version" then
-				local addonversion = GetAddOnMetadata(frame.AddOnName, field)
-				-- Remove @project-revision@ and replace it with Repository
-				addonversion = string.gsub(addonversion, "@project-version@", L["Repository"]) -- Curse
-				addonversion = string.gsub(addonversion, "wowi:revision", L["Repository"]) -- WoWInterface
-				detail:SetText(addonversion)
-			elseif field == "X-License" then
-				local copyright = GetAddOnMetadata(frame.AddOnName, "X-Copyright")
-				if copyright then
-					-- replace with © if applicable
-					copyright = string.gsub(copyright, "Copyright", "\0169")
-					copyright = string.gsub(copyright, "copyright", "\0169")
-					copyright = string.gsub(copyright, "(C)", "\0169")
-					copyright = string.gsub(copyright, "(c)", "\0169")
-					detail:SetText(copyright .. "\n" .. value)
-				else
-					detail:SetText(value)
-				end
-			elseif field == "X-Localizations" then
-				local localizations = GetAddOnMetadata(frame.AddOnName, "X-Localizations"):lower()
-				-- replace with global strings
-				localizations = string.gsub(localizations, "enus", LFG_LIST_LANGUAGE_ENUS)
-				localizations = string.gsub(localizations, "frfr", LFG_LIST_LANGUAGE_FRFR)
-				localizations = string.gsub(localizations, "dede", LFG_LIST_LANGUAGE_DEDE)
-				localizations = string.gsub(localizations, "eses", LFG_LIST_LANGUAGE_ESES)
-				localizations = string.gsub(localizations, "esmx", LFG_LIST_LANGUAGE_ESMX)
-				localizations = string.gsub(localizations, "kokr", LFG_LIST_LANGUAGE_KOKR)
-				localizations = string.gsub(localizations, "itit", LFG_LIST_LANGUAGE_ITIT)
-				localizations = string.gsub(localizations, "ptbr", LFG_LIST_LANGUAGE_PTBR)
-				localizations = string.gsub(localizations, "ruru", LFG_LIST_LANGUAGE_RURU)
-				localizations = string.gsub(localizations, "zhcn", LFG_LIST_LANGUAGE_ZHCN)
-				localizations = string.gsub(localizations, "zhtw", LFG_LIST_LANGUAGE_ZHTW)
-				detail:SetText(localizations)
-			elseif field == "X-Website" then
-				detail:SetText((haseditbox[field] and "|cff77ccff" or "") .. gsub(value, "^https?://", ""))
-			else
-				local email = GetAddOnMetadata(frame.AddOnName, field):lower()
-				email = string.gsub(email, " at ", "@")
-				email = string.gsub(email, " dot ", ".")
-				detail:SetText((haseditbox[field] and "|cff77ccff" or "") .. value)
-			end
-
-			local lineheight = math.min(detail:GetStringHeight(), 32)
-			title:SetHeight(lineheight)
-			detail:SetHeight(lineheight)
-
-			if haseditbox[field] then
-				local button = CreateFrame("Button", nil, frame)
-				button:SetAllPoints(detail)
-				button.value = value
-				button:SetScript("OnClick", OpenEditbox)
-				button:SetScript("OnEnter", ShowTooltip)
-				button:SetScript("OnLeave", HideTooltip)
-			end
-
-			anchor = title
 		end
+		local localizations = GetLocalizations(addon)
+		if localizations then
+			Table.args.localizations = {
+				order = 13,
+				name = "|cffe6cc80" .. L["Localizations"] .. ": |r" .. localizations,
+				type = "description",
+			}
+		end
+		self.aboutTable[addon] = Table
 	end
+	return Table
 end
 
--- EoF embedding
-for AddOn in pairs(lib.embeds) do
-	lib:Embed(AddOn)
+-- ---------------------------------------------------------------------
+-- Embed handling
+
+local mixins = {
+	"CreateAboutPanel",
+	"AboutOptionsTable"
+}
+
+-- AboutPanel AceConsole into the target object making the functions from the mixins list available on target:..
+-- So you can call LibStub("LibAboutPanel-2.0"):Embed(myAddOn)
+-- @param target AddOn table in which to embed
+-- @usage
+-- local addonname, AddOn = ...
+-- LibStub("LibAboutPanel-2.0"):Embed(AddOn)
+-- -- **OR**, if using Ace3
+-- -- you do not explicitly call :Embed
+-- local MyAddOn = LibStub("AceAddon-3.0"):NewAddon("MyAddOn", "LibAboutPanel-2.0")
+function AboutPanel:Embed(target)
+	for k, v in pairs(mixins) do
+		target[v] = self[v]
+	end
+	self.embeds[target] = true
+	return target
+end
+
+--- Upgrade our old embeded
+for addon in pairs(AboutPanel.embeds) do
+	AboutPanel:Embed(addon)
 end
