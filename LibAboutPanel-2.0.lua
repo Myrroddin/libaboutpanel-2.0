@@ -44,9 +44,14 @@
 --    -- Register your options with AceConfigRegistry
 --    LibStub("AceConfig-3.0"):RegisterOptionsTable("MyAddOn", options)
 -- end
-local revision = GetAddOnMetadata("LibAboutPanel-2.0", "X-Revision")
-revision = revision:match("@") and 9999 or tonumber(revision)
-local MAJOR, MINOR = "LibAboutPanel-2.0", revision
+
+local aboutRevision = GetAddOnMetadata("LibAboutPanel-2.0", "X-Revision")
+aboutRevision = tonumber(aboutRevision)
+--@debug@
+aboutRevision = 9999
+--@end-debug@
+
+local MAJOR, MINOR = "LibAboutPanel-2.0", aboutRevision
 assert(LibStub, MAJOR .. " requires LibStub")
 local AboutPanel = LibStub:NewLibrary(MAJOR, MINOR)
 if not AboutPanel then return end  -- no upgrade necessary
@@ -179,17 +184,19 @@ end
 
 local function GetLocalizations(addon)
 	local translations = GetAddOnMetadata(addon, "X-Localizations")
-	translations = translations:gsub("enUS", LFG_LIST_LANGUAGE_ENUS)
-	translations = translations:gsub("deDE", LFG_LIST_LANGUAGE_DEDE)
-	translations = translations:gsub("frFR", LFG_LIST_LANGUAGE_FRFR)
-	translations = translations:gsub("koKR", LFG_LIST_LANGUAGE_KOKR)
-	translations = translations:gsub("ruRU", LFG_LIST_LANGUAGE_RURU)
-	translations = translations:gsub("itIT", LFG_LIST_LANGUAGE_ITIT)
-	translations = translations:gsub("ptBR", LFG_LIST_LANGUAGE_PTBR)
-	translations = translations:gsub("zhCN", LFG_LIST_LANGUAGE_ZHCN)
-	translations = translations:gsub("zhTW", LFG_LIST_LANGUAGE_ZHTW)
-	translations = translations:gsub("esES", LFG_LIST_LANGUAGE_ESES)
-	translations = translations:gsub("esMX", LFG_LIST_LANGUAGE_ESMX)
+	if translations then
+		translations = translations:gsub("enUS", LFG_LIST_LANGUAGE_ENUS)
+		translations = translations:gsub("deDE", LFG_LIST_LANGUAGE_DEDE)
+		translations = translations:gsub("frFR", LFG_LIST_LANGUAGE_FRFR)
+		translations = translations:gsub("koKR", LFG_LIST_LANGUAGE_KOKR)
+		translations = translations:gsub("ruRU", LFG_LIST_LANGUAGE_RURU)
+		translations = translations:gsub("itIT", LFG_LIST_LANGUAGE_ITIT)
+		translations = translations:gsub("ptBR", LFG_LIST_LANGUAGE_PTBR)
+		translations = translations:gsub("zhCN", LFG_LIST_LANGUAGE_ZHCN)
+		translations = translations:gsub("zhTW", LFG_LIST_LANGUAGE_ZHTW)
+		translations = translations:gsub("esES", LFG_LIST_LANGUAGE_ESES)
+		translations = translations:gsub("esMX", LFG_LIST_LANGUAGE_ESMX)
+	end
 	return translations
 end
 
@@ -256,7 +263,7 @@ end
 function AboutPanel:CreateAboutPanel(addon, parent)
 	addon = addon:gsub(" ", "") -- Remove spaces from AddOn because GetMetadata doesn't like those
 	local addon = parent or addon
-	local frame = self.aboutFrame[addon]
+	local frame = AboutPanel.aboutFrame[addon]
 
 	if not frame then
 		frame = CreateFrame("Frame", addon.."AboutPanel", UIParent)
@@ -332,7 +339,7 @@ function AboutPanel:CreateAboutPanel(addon, parent)
 		frame.name = not parent and addon or L["About"]
 		frame.parent = parent
 		InterfaceOptions_AddCategory(frame)
-		self.aboutFrame[addon] = frame
+		AboutPanel.aboutFrame[addon] = frame
 	end
 
 	return frame
@@ -351,7 +358,7 @@ end
 function AboutPanel:AboutOptionsTable(addon)
 	assert(LibStub("AceConfig-3.0"), "LibAboutPanel-2.0: API 'AboutOptionsTable' requires AceConfig-3.0", 2)
 	addon = addon:gsub(" ", "") -- Remove spaces from AddOn because GetMetadata doesn't like those
-	local Table = self.aboutTable[addon]
+	local Table = AboutPanel.aboutTable[addon]
 	if not Table then
 		Table = {
 			name = L["About"],
@@ -462,7 +469,7 @@ function AboutPanel:AboutOptionsTable(addon)
 				type = "description",
 			}
 		end
-		self.aboutTable[addon] = Table
+		AboutPanel.aboutTable[addon] = Table
 	end
 	return Table
 end
