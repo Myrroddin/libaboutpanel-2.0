@@ -182,9 +182,10 @@ local function GetLicense(addon)
 	license = TitleCase(license)
 
 	license = license:gsub("Copyright", L["Copyright"] .. " " .. "©")
-	license = license:gsub("%([cC]%)", "")
+	license = license:gsub("%([cC]%)", "©")
+	license = license:gsub("© ©", "©")
 	license = license:gsub("  ", " ")
-	license = license:gsub("all rights reverved", L["All Rights Reserved"])
+	license = license:gsub("[aA]ll [rR]ights [rR]eserved", L["All Rights Reserved"])
 	return license
 end
 
