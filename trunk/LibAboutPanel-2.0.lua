@@ -163,6 +163,9 @@ local function GetVersion(addon)
 	version = version:gsub("r2", L["Repository"]) -- Curse
 	version = version:gsub("wowi:revision", L["Repository"]) -- WoWInterface
 
+	-- replace Curseforge/Wowace repository keywords
+	version = version:gsub("@.+", L["Developer Build"])
+
 	local revision = GetAddOnMetadata(addon, "X-Project-Revision")
 	version = revision and version.." -rev."..revision or version
 	return version
@@ -173,12 +176,15 @@ local function GetCategory(addon)
 end
 
 local function GetLicense(addon)
-	local license = GetAddOnMetadata(addon, "X-License")
+	local license = GetAddOnMetadata(addon, "X-License") or GetAddOnMetadata(addon, "X-Copyright")
 	if not license then return end
 
-	license = license:gsub("[cC]opyright", "©")
-	license = license:gsub("%([cC]%)", "©")
-	license = license:gsub("[aA]ll [rR]ights [rR]eserved", L["All Rights Reserved"])
+	license = TitleCase(license)
+
+	license = license:gsub("Copyright", L["Copyright"] .. " " .. "©")
+	license = license:gsub("%([cC]%)", "")
+	license = license:gsub("  ", " ")
+	license = license:gsub("all rights reverved", L["All Rights Reserved"])
 	return license
 end
 
