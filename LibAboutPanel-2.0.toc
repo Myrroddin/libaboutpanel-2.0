@@ -16,6 +16,7 @@
 ## Author: Paul Vandersypen, Artur91425
 ## X-Copyright: Copyright (c) 2019 Paul Vandersypen. All Rights Reserved
 ## X-Category: Libraries
+## LoadOnDemand: 1
 
 LibStub\LibStub.lua
 AceConfig-3.0\AceConfig-3.0.xml
