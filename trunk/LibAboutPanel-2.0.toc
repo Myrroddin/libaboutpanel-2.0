@@ -7,12 +7,12 @@
 ## Notes-esMX: @localization(locale="esMX", key="Notes", namespace="ToC")@
 ## Notes-esES: @localization(locale="esES", key="Notes", namespace="ToC")@
 ## Notes-ptBR: @localization(locale="ptBR", key="Notes", namespace="ToC")@
-## Notes-zhCN: 添加插件 ToC 表格到选项栏
+## Notes-zhCN: @localization(locale="zhCN", key="Notes", namespace="ToC")@
 ## Notes-zhTW: @localization(locale="zhTW", key="Notes", namespace="ToC")@
 ## Notes-itIT: @localization(locale="itIT", key="Notes", namespace="ToC")@
 ## Notes-frFR: @localization(locale="frFR", key="Notes", namespace="ToC")@
-## Version: 1.0.3
-## X-Revision: 9999
+## Version: @project-version@
+## X-Revision: @project-revision@
 ## Author: Paul Vandersypen, Artur91425
 ## X-Copyright: Copyright (c) 2019 Paul Vandersypen. All Rights Reserved
 ## X-Category: Libraries
