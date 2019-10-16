@@ -76,23 +76,148 @@ local L = setmetatable({}, {
 
 local locale = GetLocale()
 if locale == "koKR" then
---@localization(locale="koKR", format="lua_additive_table")@
+	L["About"] = "대하여"
+	L["Author"] = "저작자"
+	L["Category"] = "분류"
+	L["Click and press Ctrl-C to copy"] = "클릭하고 Ctrl-C를 눌러 복사"
+	L["Copyright"] = "저작권"
+	--[[Translation missing --]]
+	--[[ L["Credits"] = ""--]]
+	L["Date"] = "날짜"
+	--[[Translation missing --]]
+	--[[ L["Developer Build"] = ""--]]
+	L["Email"] = "전자 우편"
+	L["License"] = "라이센스"
+	L["Localizations"] = "현지화"
+	L["Version"] = "버전"
+	L["Website"] = "웹 사이트"
 elseif locale == "frFR" then
---@localization(locale="frFR", format="lua_additive_table")@
+	L["About"] = "à propos de"
+	L["Author"] = "Auteur"
+	L["Category"] = "Catégorie"
+	L["Click and press Ctrl-C to copy"] = "Cliquez et appuyez sur Ctrl-C pour copier"
+	L["Copyright"] = "Droit d'Auteur"
+	--[[Translation missing --]]
+	--[[ L["Credits"] = ""--]]
+	L["Date"] = "Date"
+	--[[Translation missing --]]
+	--[[ L["Developer Build"] = ""--]]
+	L["Email"] = "E-mail"
+	L["License"] = "Licence"
+	L["Localizations"] = "Localisations"
+	L["Version"] = "Version"
+	L["Website"] = "Site web"
 elseif locale == "deDE" then
---@localization(locale="deDE", format="lua_additive_table")@
+	L["About"] = "Über"
+	L["Author"] = "Autor"
+	L["Category"] = "Kategorie"
+	L["Click and press Ctrl-C to copy"] = "Klicken und Strg-C drücken zum kopieren."
+	L["Copyright"] = "Copyright"
+	--[[Translation missing --]]
+	--[[ L["Credits"] = ""--]]
+	L["Date"] = "Datum"
+	--[[Translation missing --]]
+	--[[ L["Developer Build"] = ""--]]
+	L["Email"] = "E-Mail"
+	L["License"] = "Lizenz"
+	L["Localizations"] = "Lokalisierungen"
+	L["Version"] = "Version"
+	L["Website"] = "Webseite"
 elseif locale == "ruRU" then
---@localization(locale="ruRU", format="lua_additive_table")@
+	L["About"] = "Об аддоне"
+	L["Author"] = "Автор"
+	L["Category"] = "Категория"
+	L["Click and press Ctrl-C to copy"] = "Щелкните и нажмите Ctrl-C для копирования"
+	L["Copyright"] = "авторское право"
+	--[[Translation missing --]]
+	--[[ L["Credits"] = ""--]]
+	L["Date"] = "Дата"
+	--[[Translation missing --]]
+	--[[ L["Developer Build"] = ""--]]
+	L["Email"] = "Почта"
+	L["License"] = "лицензия"
+	L["Localizations"] = "Локализации"
+	L["Version"] = "Версия"
+	L["Website"] = "Сайт"
 elseif locale == "zhTW" then
---@localization(locale="zhTW", format="lua_additive_table")@
+	L["About"] = "日期"
+	L["Author"] = "作者"
+	L["Category"] = "類別"
+	L["Click and press Ctrl-C to copy"] = "左鍵點擊並按下 Ctrl-C 以複製字串"
+	L["Copyright"] = "著作權"
+	--[[Translation missing --]]
+	--[[ L["Credits"] = ""--]]
+	L["Date"] = "日期"
+	--[[Translation missing --]]
+	--[[ L["Developer Build"] = ""--]]
+	L["Email"] = "電子郵件"
+	L["License"] = "執照"
+	L["Localizations"] = "本地化"
+	L["Version"] = "版本"
+	L["Website"] = "網站"
 elseif locale == "zhCN" then
---@localization(locale="zhCN", format="lua_additive_table")@
+	L["About"] = "关于"
+	L["Author"] = "作者"
+	L["Category"] = "分类"
+	L["Click and press Ctrl-C to copy"] = "点击并 Ctrl-C 复制"
+	L["Copyright"] = "版权"
+	L["Credits"] = "鸣谢"
+	L["Date"] = "日期"
+	L["Developer Build"] = "开发者构筑"
+	L["Email"] = "电子邮件"
+	L["License"] = "许可"
+	L["Localizations"] = "本地化"
+	L["Version"] = "版本"
+	L["Website"] = "网站"
 elseif locale == "itIT" then
---@localization(locale="itIT", format="lua_additive_table")@
+	L["About"] = "Licenza"
+	L["Author"] = "Autore"
+	--[[Translation missing --]]
+	--[[ L["Category"] = ""--]]
+	L["Click and press Ctrl-C to copy"] = "Fare clic e premere Ctrl-C per copiare"
+	L["Copyright"] = "Diritto d'Autore"
+	--[[Translation missing --]]
+	--[[ L["Credits"] = ""--]]
+	L["Date"] = "Data"
+	--[[Translation missing --]]
+	--[[ L["Developer Build"] = ""--]]
+	L["Email"] = "E-mail"
+	L["License"] = "Licenza"
+	L["Localizations"] = "Localizzazioni"
+	L["Version"] = "Versione"
+	L["Website"] = "Sito Web"
 elseif locale == "ptBR" then
---@localization(locale="ptBR", format="lua_additive_table")@
+--[[Translation missing --]]
+--[[ L["About"] = ""--]]
+L["Author"] = "Autor"
+L["Category"] = "Categoria"
+L["Click and press Ctrl-C to copy"] = "Clique e pressione Ctrl-C para copiar"
+L["Copyright"] = "Direitos Autorais"
+--[[Translation missing --]]
+--[[ L["Credits"] = ""--]]
+L["Date"] = "Data"
+--[[Translation missing --]]
+--[[ L["Developer Build"] = ""--]]
+L["Email"] = "E-mail"
+L["License"] = "Licença"
+L["Localizations"] = "Localizações"
+L["Version"] = "Versão"
+L["Website"] = "Site"
 elseif locale == "esES" or locale == "esMX" then
---@localization(locale="esES", format="lua_additive_table")@
+	L["About"] = "Sobre"
+	L["Author"] = "Autor"
+	L["Category"] = "Categoría"
+	L["Click and press Ctrl-C to copy"] = "Clic y pulse Ctrl-C para copiar."
+	L["Copyright"] = "Derechos de Autor"
+	L["Credits"] = "Créditos"
+	L["Date"] = "Fecha"
+	--[[Translation missing --]]
+	--[[ L["Developer Build"] = ""--]]
+	L["Email"] = "Email"
+	L["License"] = "Licencia"
+	L["Localizations"] = "Idiomas"
+	L["Version"] = "Versión"
+	L["Website"] = "Sitio web"
 end
 
 -- handy fuction to create Title Case -----------
