@@ -82,7 +82,7 @@ if locale == "enUS" or locale == "enGB" then
 	L["Localizations"] = "Localizations"
 	L["Version"] = "Version"
 	L["Website"] = "Website"
-if locale == "koKR" then
+elseif locale == "koKR" then
 	L["About"] = "대하여"
 	L["Author"] = "저작자"
 	L["Category"] = "분류"
