@@ -44,7 +44,7 @@
 --    LibStub("AceConfig-3.0"):RegisterOptionsTable("MyAddOn", options)
 -- end
 
-local MAJOR, MINOR = "LibAboutPanel-2.0", 21
+local MAJOR, MINOR = "LibAboutPanel-2.0", 23
 assert(LibStub, MAJOR .. " requires LibStub")
 local AboutPanel = LibStub:NewLibrary(MAJOR, MINOR)
 if not AboutPanel then return end  -- no upgrade necessary
@@ -70,6 +70,7 @@ local L = setmetatable({}, {
 local locale = GetLocale()
 if locale == "enUS" or locale == "enGB" then
 	L["About"] = "About"
+	L["All Rights Reserved"] = "All Rights Reserved"
 	L["Author"] = "Author"
 	L["Category"] = "Category"
 	L["Click and press Ctrl-C to copy"] = "Click and press Ctrl-C to copy"
@@ -80,90 +81,98 @@ if locale == "enUS" or locale == "enGB" then
 	L["Email"] = "Email"
 	L["License"] = "License"
 	L["Localizations"] = "Localizations"
+	L["on the %s realm"] = "on the %s realm"
+	L["Repository"] = "Repository"
 	L["Version"] = "Version"
 	L["Website"] = "Website"
 elseif locale == "koKR" then
 	L["About"] = "대하여"
+	L["All Rights Reserved"] = "판권 소유"
 	L["Author"] = "저작자"
 	L["Category"] = "분류"
 	L["Click and press Ctrl-C to copy"] = "클릭하고 Ctrl-C를 눌러 복사"
 	L["Copyright"] = "저작권"
-	--[[Translation missing --]]
 	L["Credits"] = "Credits"
 	L["Date"] = "날짜"
-	--[[Translation missing --]]
-	L["Developer Build"] = "Developer Build"
+	L["Developer Build"] = "개발자 빌드"
 	L["Email"] = "전자 우편"
 	L["License"] = "라이센스"
 	L["Localizations"] = "현지화"
+	L["on the %s realm"] = "on the %s realm"
+	L["Repository"] = "Repository"
 	L["Version"] = "버전"
 	L["Website"] = "웹 사이트"
 elseif locale == "frFR" then
 	L["About"] = "à propos de"
+	L["All Rights Reserved"] = "Tous Droits Réservés"
 	L["Author"] = "Auteur"
 	L["Category"] = "Catégorie"
 	L["Click and press Ctrl-C to copy"] = "Cliquez et appuyez sur Ctrl-C pour copier"
 	L["Copyright"] = "Droit d'Auteur"
-	--[[Translation missing --]]
 	L["Credits"] = "Credits"
 	L["Date"] = "Date"
-	--[[Translation missing --]]
-	L["Developer Build"] = "Developer Build"
+	L["Developer Build"] = "Développeur Développé"
 	L["Email"] = "E-mail"
 	L["License"] = "Licence"
 	L["Localizations"] = "Localisations"
+	L["on the %s realm"] = "on the %s realm"
+	L["Repository"] = "Repository"
 	L["Version"] = "Version"
 	L["Website"] = "Site web"
 elseif locale == "deDE" then
 	L["About"] = "Über"
+	L["All Rights Reserved"] = "Alle Rechte Vorbehalten"
 	L["Author"] = "Autor"
 	L["Category"] = "Kategorie"
 	L["Click and press Ctrl-C to copy"] = "Klicken und Strg-C drücken zum kopieren."
 	L["Copyright"] = "Copyright"
-	--[[Translation missing --]]
 	L["Credits"] = "Credits"
 	L["Date"] = "Datum"
-	--[[Translation missing --]]
-	L["Developer Build"] = "Developer Build"
+	L["Developer Build"] = "Entwickler Build"
 	L["Email"] = "E-Mail"
 	L["License"] = "Lizenz"
 	L["Localizations"] = "Lokalisierungen"
+	L["on the %s realm"] = "on the %s realm"
+	L["Repository"] = "Repository"
 	L["Version"] = "Version"
 	L["Website"] = "Webseite"
 elseif locale == "ruRU" then
 	L["About"] = "Об аддоне"
+	L["All Rights Reserved"] = "Все права защищены"
 	L["Author"] = "Автор"
 	L["Category"] = "Категория"
 	L["Click and press Ctrl-C to copy"] = "Щелкните и нажмите Ctrl-C для копирования"
 	L["Copyright"] = "авторское право"
-	--[[Translation missing --]]
 	L["Credits"] = "Credits"
 	L["Date"] = "Дата"
-	--[[Translation missing --]]
-	L["Developer Build"] = "Developer Build"
+	L["Developer Build"] = "Разработчик Build"
 	L["Email"] = "Почта"
 	L["License"] = "лицензия"
 	L["Localizations"] = "Локализации"
+	L["on the %s realm"] = "on the %s realm"
+	L["Repository"] = "Repository"
 	L["Version"] = "Версия"
 	L["Website"] = "Сайт"
 elseif locale == "zhTW" then
 	L["About"] = "日期"
+	L["All Rights Reserved"] = "保留所有權利"
 	L["Author"] = "作者"
 	L["Category"] = "類別"
 	L["Click and press Ctrl-C to copy"] = "左鍵點擊並按下 Ctrl-C 以複製字串"
 	L["Copyright"] = "著作權"
-	--[[Translation missing --]]
 	L["Credits"] = "Credits"
 	L["Date"] = "日期"
-	--[[Translation missing --]]
-	L["Developer Build"] = "Developer Build"
+	L["Developer Build"] = "開發人員構建"
 	L["Email"] = "電子郵件"
 	L["License"] = "執照"
 	L["Localizations"] = "本地化"
+	L["on the %s realm"] = "on the %s realm"
+	L["Repository"] = "Repository"
 	L["Version"] = "版本"
 	L["Website"] = "網站"
 elseif locale == "zhCN" then
 	L["About"] = "关于"
+	L["All Rights Reserved"] = "保留所有权利"
 	L["Author"] = "作者"
 	L["Category"] = "分类"
 	L["Click and press Ctrl-C to copy"] = "点击并 Ctrl-C 复制"
@@ -174,55 +183,59 @@ elseif locale == "zhCN" then
 	L["Email"] = "电子邮件"
 	L["License"] = "许可"
 	L["Localizations"] = "本地化"
+	L["on the %s realm"] = "on the %s realm"
+	L["Repository"] = "Repository"
 	L["Version"] = "版本"
 	L["Website"] = "网站"
 elseif locale == "itIT" then
 	L["About"] = "Licenza"
+	L["All Rights Reserved"] = "Tutti i Diritti Riservati"
 	L["Author"] = "Autore"
-	--[[Translation missing --]]
 	L["Category"] = "Category"
 	L["Click and press Ctrl-C to copy"] = "Fare clic e premere Ctrl-C per copiare"
 	L["Copyright"] = "Diritto d'Autore"
-	--[[Translation missing --]]
 	L["Credits"] = "Credits"
 	L["Date"] = "Data"
-	--[[Translation missing --]]
-	L["Developer Build"] = "Developer Build"
+	L["Developer Build"] = "Build dello sviluppatore"
 	L["Email"] = "E-mail"
 	L["License"] = "Licenza"
 	L["Localizations"] = "Localizzazioni"
+	L["on the %s realm"] = "on the %s realm"
+	L["Repository"] = "Repository"
 	L["Version"] = "Versione"
 	L["Website"] = "Sito Web"
 elseif locale == "ptBR" then
-	--[[Translation missing --]]
-	L["About"] = "About"
+	L["About"] = "Sobre"
+	L["All Rights Reserved"] = "Todos os Direitos Reservados"
 	L["Author"] = "Autor"
 	L["Category"] = "Categoria"
 	L["Click and press Ctrl-C to copy"] = "Clique e pressione Ctrl-C para copiar"
 	L["Copyright"] = "Direitos Autorais"
-	--[[Translation missing --]]
 	L["Credits"] = "Credits"
 	L["Date"] = "Data"
-	--[[Translation missing --]]
-	L["Developer Build"] = "Developer Build"
+	L["Developer Build"] = "Desenvolvimento do Desenvolvedor"
 	L["Email"] = "E-mail"
 	L["License"] = "Licença"
 	L["Localizations"] = "Localizações"
+	L["on the %s realm"] = "on the %s realm"
+	L["Repository"] = "Repository"
 	L["Version"] = "Versão"
 	L["Website"] = "Site"
 elseif locale == "esES" or locale == "esMX" then
 	L["About"] = "Sobre"
+	L["All Rights Reserved"] = "Todos los Derechos Reservados"
 	L["Author"] = "Autor"
 	L["Category"] = "Categoría"
 	L["Click and press Ctrl-C to copy"] = "Clic y pulse Ctrl-C para copiar."
 	L["Copyright"] = "Derechos de Autor"
 	L["Credits"] = "Créditos"
 	L["Date"] = "Fecha"
-	--[[Translation missing --]]
-	L["Developer Build"] = "Developer Build"
+	L["Developer Build"] = "Desarrollador Desarrollar"
 	L["Email"] = "Email"
 	L["License"] = "Licencia"
 	L["Localizations"] = "Idiomas"
+	L["on the %s realm"] = "on the %s realm"
+	L["Repository"] = "Repository"
 	L["Version"] = "Versión"
 	L["Website"] = "Sitio web"
 end
