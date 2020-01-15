@@ -44,9 +44,9 @@
 --    LibStub("AceConfig-3.0"):RegisterOptionsTable("MyAddOn", options)
 -- end
 
-local MAJOR, MINOR = "LibAboutPanel-2.0", 23
+local MAJOR, MINOR = "LibAboutPanel-2.0", 24
 assert(LibStub, MAJOR .. " requires LibStub")
-local AboutPanel = LibStub:NewLibrary(MAJOR, MINOR)
+local AboutPanel, oldminor = LibStub:NewLibrary(MAJOR, MINOR)
 if not AboutPanel then return end  -- no upgrade necessary
 
 AboutPanel.embeds = AboutPanel.embeds or {} -- table containing objects AboutPanel is embedded in.
@@ -98,7 +98,9 @@ elseif locale == "koKR" then
 	L["Email"] = "전자 우편"
 	L["License"] = "라이센스"
 	L["Localizations"] = "현지화"
+	--[[Translation missing --]]
 	L["on the %s realm"] = "on the %s realm"
+	--[[Translation missing --]]
 	L["Repository"] = "Repository"
 	L["Version"] = "버전"
 	L["Website"] = "웹 사이트"
@@ -115,7 +117,9 @@ elseif locale == "frFR" then
 	L["Email"] = "E-mail"
 	L["License"] = "Licence"
 	L["Localizations"] = "Localisations"
+	--[[Translation missing --]]
 	L["on the %s realm"] = "on the %s realm"
+	--[[Translation missing --]]
 	L["Repository"] = "Repository"
 	L["Version"] = "Version"
 	L["Website"] = "Site web"
@@ -132,7 +136,9 @@ elseif locale == "deDE" then
 	L["Email"] = "E-Mail"
 	L["License"] = "Lizenz"
 	L["Localizations"] = "Lokalisierungen"
+	--[[Translation missing --]]
 	L["on the %s realm"] = "on the %s realm"
+	--[[Translation missing --]]
 	L["Repository"] = "Repository"
 	L["Version"] = "Version"
 	L["Website"] = "Webseite"
@@ -149,25 +155,27 @@ elseif locale == "ruRU" then
 	L["Email"] = "Почта"
 	L["License"] = "лицензия"
 	L["Localizations"] = "Локализации"
+	--[[Translation missing --]]
 	L["on the %s realm"] = "on the %s realm"
+	--[[Translation missing --]]
 	L["Repository"] = "Repository"
 	L["Version"] = "Версия"
 	L["Website"] = "Сайт"
 elseif locale == "zhTW" then
-	L["About"] = "日期"
+	L["About"] = "關於"
 	L["All Rights Reserved"] = "保留所有權利"
 	L["Author"] = "作者"
 	L["Category"] = "類別"
 	L["Click and press Ctrl-C to copy"] = "左鍵點擊並按下 Ctrl-C 以複製字串"
-	L["Copyright"] = "著作權"
-	L["Credits"] = "Credits"
+	L["Copyright"] = "版權"
+	L["Credits"] = "貢獻者"
 	L["Date"] = "日期"
-	L["Developer Build"] = "開發人員構建"
+	L["Developer Build"] = "開發版"
 	L["Email"] = "電子郵件"
-	L["License"] = "執照"
+	L["License"] = "授權"
 	L["Localizations"] = "本地化"
-	L["on the %s realm"] = "on the %s realm"
-	L["Repository"] = "Repository"
+	L["on the %s realm"] = "在「%s」伺服器"
+	L["Repository"] = "程式碼存放庫"
 	L["Version"] = "版本"
 	L["Website"] = "網站"
 elseif locale == "zhCN" then
@@ -183,7 +191,9 @@ elseif locale == "zhCN" then
 	L["Email"] = "电子邮件"
 	L["License"] = "许可"
 	L["Localizations"] = "本地化"
+	--[[Translation missing --]]
 	L["on the %s realm"] = "on the %s realm"
+	--[[Translation missing --]]
 	L["Repository"] = "Repository"
 	L["Version"] = "版本"
 	L["Website"] = "网站"
@@ -200,7 +210,9 @@ elseif locale == "itIT" then
 	L["Email"] = "E-mail"
 	L["License"] = "Licenza"
 	L["Localizations"] = "Localizzazioni"
+	--[[Translation missing --]]
 	L["on the %s realm"] = "on the %s realm"
+	--[[Translation missing --]]
 	L["Repository"] = "Repository"
 	L["Version"] = "Versione"
 	L["Website"] = "Sito Web"
@@ -217,7 +229,9 @@ elseif locale == "ptBR" then
 	L["Email"] = "E-mail"
 	L["License"] = "Licença"
 	L["Localizations"] = "Localizações"
+	--[[Translation missing --]]
 	L["on the %s realm"] = "on the %s realm"
+	--[[Translation missing --]]
 	L["Repository"] = "Repository"
 	L["Version"] = "Versão"
 	L["Website"] = "Site"
@@ -234,7 +248,9 @@ elseif locale == "esES" or locale == "esMX" then
 	L["Email"] = "Email"
 	L["License"] = "Licencia"
 	L["Localizations"] = "Idiomas"
+	--[[Translation missing --]]
 	L["on the %s realm"] = "on the %s realm"
+	--[[Translation missing --]]
 	L["Repository"] = "Repository"
 	L["Version"] = "Versión"
 	L["Website"] = "Sitio web"
@@ -324,7 +340,10 @@ local function GetLicense(addon)
 	local license = GetAddOnMetadata(addon, "X-License") or GetAddOnMetadata(addon, "X-Copyright")
 	if not license then return end
 
-	license = TitleCase(license)
+	local checkCaps = strmatch(license, "^MIT.-$") or strmatch(license, "^GNU.-$")
+	if not checkCaps then
+		license = TitleCase(license)
+	end
 
 	license = license:gsub("Copyright", L["Copyright"] .. " " .. "©")
 	license = license:gsub("%([cC]%)", "©")
