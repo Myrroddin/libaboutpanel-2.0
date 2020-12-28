@@ -1,11 +1,4 @@
 package-as: LibAboutPanel-2.0
 
-enable-nolib-creation: no
-
-externals:
-    LibStub: https://repos.wowace.com/wow/libstub/trunk
-    CallbackHandler-1.0: https://repos.wowace.com/wow/callbackhandler/trunk/CallbackHandler-1.0
-    AceConfig-3.0: https://repos.wowace.com/wow/ace3/trunk/AceConfig-3.0
-
 ignore:
-    - LibStub/tests
+  - LibStub/tests
