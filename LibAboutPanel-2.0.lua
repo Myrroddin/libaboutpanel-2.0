@@ -44,7 +44,7 @@
 --    LibStub("AceConfig-3.0"):RegisterOptionsTable("MyAddOn", options)
 -- end
 
-local MAJOR, MINOR = "LibAboutPanel-2.0", 25
+local MAJOR, MINOR = "LibAboutPanel-2.0", 26
 assert(LibStub, MAJOR .. " requires LibStub")
 local AboutPanel, oldminor = LibStub:NewLibrary(MAJOR, MINOR)
 if not AboutPanel then return end  -- no upgrade necessary
@@ -200,16 +200,15 @@ elseif locale == "ruRU" then
 	L["Author"] = "Автор"
 	L["Category"] = "Категория"
 	L["Click and press Ctrl-C to copy"] = "Щелкните и нажмите Ctrl-C для копирования"
-	L["Copyright"] = "авторское право"
-	L["Credits"] = "Credits"
+	L["Copyright"] = "Авторское право"
+	L["Credits"] = "Благодарности"
 	L["Date"] = "Дата"
-	L["Developer Build"] = "Разработчик Build"
+	L["Developer Build"] = "Разработчик сборки"
 	L["Email"] = "Почта"
-	L["License"] = "лицензия"
-	L["Localizations"] = "Локализации"
-	--[[Translation missing --]]
-	L["on the %s realm"] = "on the %s realm"
-	L["Repository"] = "вместилище"
+	L["License"] = "Лицензия"
+	L["Localizations"] = "Языки"
+	L["on the %s realm"] = "с реалма \\\"%s\\\""
+	L["Repository"] = "Репозиторий"
 	L["Version"] = "Версия"
 	L["Website"] = "Сайт"
 elseif locale == "zhCN" then

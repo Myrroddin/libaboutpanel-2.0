@@ -1,9 +1,17 @@
-## Interface: 80300
+#@retail@
+## Interface: 90002
+#@end-retail@
+#@non-retail@
+# ## Interface: 11306
+#@end-non-retail@
 ## Title: Lib: AboutPanel-2.0
 ## Notes: Adds an AddOn's ToC fields to its options table
 ## Notes-zhCN: 添加插件 ToC 表格到选项栏
 ## Notes-zhTW: 將插件 ToC 檔裡頭的欄位資料填到插件的選項表裡
-## Version: 1.0.9
+## Notes-ruRU: Добавляет поля ToC файла в таблицу опций аддона
+## Version: @project-version@
+## X-Curse-Project-ID: 102269
+## X-WoWI-ID: 25392
 ## Author: Paul Vandersypen, Artur91425
 ## X-License: GNU Lesser General Public License 2.1
 ## X-Category: Library
