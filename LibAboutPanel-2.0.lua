@@ -1,12 +1,3 @@
---[[
-	Whom is doing what with this library
-	$Author$
-	$Id$
-	$Header$
-	@class file
-	@name LibAboutPanel-2.0.lua
-]]--
-
 --- **LibAboutPanel-2.0** either creates an "About" panel in your AddOn's
 -- Interface/AddOns frame or within said AddOn's options table
 -- The word //About// will be localized, among other things, automatically
@@ -44,7 +35,7 @@
 --    LibStub("AceConfig-3.0"):RegisterOptionsTable("MyAddOn", options)
 -- end
 
-local MAJOR, MINOR = "LibAboutPanel-2.0", tonumber(strmatch("%d+", "@project-revision@" or "9999"))
+local MAJOR, MINOR = "LibAboutPanel-2.0", 100 + tonumber(strmatch("%d+", "@project-revision@" or "9999"))
 assert(LibStub, MAJOR .. " requires LibStub")
 local AboutPanel, oldminor = LibStub:NewLibrary(MAJOR, MINOR)
 if not AboutPanel then return end  -- no upgrade necessary
