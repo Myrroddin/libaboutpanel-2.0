@@ -35,7 +35,7 @@
 --    LibStub("AceConfig-3.0"):RegisterOptionsTable("MyAddOn", options)
 -- end
 
-local MAJOR, MINOR = "LibAboutPanel-2.0", 101 -- bump MINOR quite a lot due to switch from SVN to Git
+local MAJOR, MINOR = "LibAboutPanel-2.0", 102 -- bump MINOR quite a lot due to switch from SVN to Git
 assert(LibStub, MAJOR .. " requires LibStub")
 local AboutPanel, oldminor = LibStub:NewLibrary(MAJOR, MINOR)
 if not AboutPanel then return end  -- no upgrade necessary
@@ -114,20 +114,19 @@ elseif locale == "esES" or locale == "esMX" then
 	L["Version"] = "Versión"
 	L["Website"] = "Sitio web"
 elseif locale == "frFR" then
-	L["About"] = "à propos de"
+	L["About"] = "À propos"
 	L["All Rights Reserved"] = "Tous Droits Réservés"
 	L["Author"] = "Auteur"
 	L["Category"] = "Catégorie"
 	L["Click and press Ctrl-C to copy"] = "Cliquez et appuyez sur Ctrl-C pour copier"
-	L["Copyright"] = "Droit d'Auteur"
-	L["Credits"] = "Credits"
+	L["Copyright"] = "Droits d'Auteur"
+	L["Credits"] = "Crédits"
 	L["Date"] = "Date"
-	L["Developer Build"] = "Développeur Développé"
+	L["Developer Build"] = "Version de développement"
 	L["Email"] = "E-mail"
 	L["License"] = "Licence"
-	L["Localizations"] = "Localisations"
-	--[[Translation missing --]]
-	L["on the %s realm"] = "on the %s realm"
+	L["Localizations"] = "Traductions"
+	L["on the %s realm"] = "Sur le serveur %s"
 	L["Repository"] = "Dépôt"
 	L["Version"] = "Version"
 	L["Website"] = "Site web"

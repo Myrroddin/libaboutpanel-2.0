@@ -1,9 +1,6 @@
-#@retail@
-## Interface: 90005
-#@end-retail@
-#@non-retail@
-# ## Interface: 11306
-#@end-non-retail@
+## Interface-Retail: 90005
+## Interface-Classic: 11306
+## Interface-BC: 20501
 ## Title: Lib: AboutPanel-2.0
 ## Notes: Adds an AddOn's ToC fields to its options table
 ## Notes-zhCN: 添加插件 ToC 表格到选项栏
