@@ -91,7 +91,6 @@ elseif locale == "deDE" then
 	L["Localizations"] = "Lokalisierungen"
 	--[[Translation missing --]]
 	L["on the %s realm"] = "on the %s realm"
-	--[[Translation missing --]]
 	L["Repository"] = "Repository"
 	L["Version"] = "Version"
 	L["Website"] = "Webseite"
