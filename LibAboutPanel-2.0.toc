@@ -1,5 +1,5 @@
 ## Interface-Retail: 90200
-## Interface-Classic: 11401
+## Interface-Classic: 11402
 ## Interface-BCC: 20503
 ## Title: Lib: AboutPanel-2.0
 ## Notes: Adds an AddOn's ToC fields to its options table
@@ -10,7 +10,7 @@
 ## X-Curse-Project-ID: 102269
 ## X-WoWI-ID: 25392
 ## Author: Paul Vandersypen, Artur91425
-## X-License: GNU Lesser General Public License 2.1
+## X-License: MIT License
 ## X-Category: Library
 ## LoadOnDemand: 1
 
