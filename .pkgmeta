@@ -1,7 +1,7 @@
 package-as: LibAboutPanel-2.0
 wowi-archive-previous: no
-
 enable-no-lib-strip: no
+enable-toc-creation: yes
 
 externals:
   Libstub: https://repos.wowace.com/wow/libstub/trunk
