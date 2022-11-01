@@ -1,6 +1,5 @@
 ## Interface: 100000
 ## Interface-Classic: 11403
-## Interface-BCC: 20504
 ## Interface-Wrath: 30400
 ## Title: Lib: AboutPanel-2.0
 ## Notes: Adds an AddOn's ToC fields to its options table
