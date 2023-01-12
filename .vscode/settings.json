@@ -1,0 +1,31 @@
+{
+    "Lua.diagnostics.disable": [
+        "param-type-mismatch"
+    ],
+    "Lua.diagnostics.globals": [
+        "GameTooltip",
+        "InterfaceOptions_AddCategory",
+        "FACTION_ALLIANCE",
+        "FACTION_HORDE",
+        "LFG_LIST_LANGUAGE_ENUS",
+        "LFG_LIST_LANGUAGE_DEDE",
+        "LFG_LIST_LANGUAGE_FRFR",
+        "LFG_LIST_LANGUAGE_KOKR",
+        "LFG_LIST_LANGUAGE_RURU",
+        "LFG_LIST_LANGUAGE_ITIT",
+        "LFG_LIST_LANGUAGE_PTBR",
+        "LFG_LIST_LANGUAGE_ZHCN",
+        "LFG_LIST_LANGUAGE_ZHTW",
+        "LFG_LIST_LANGUAGE_ESES",
+        "LFG_LIST_LANGUAGE_ESMX",
+        "SELECTED_CHAT_FRAME",
+        "DEFAULT_CHAT_FRAME",
+        "NORMAL_FONT_COLOR",
+        "GameFontNormal",
+        "GameFontHighlight",
+        "ACCEPT",
+        "CANCEL",
+        "GameFontHighlightLarge",
+        "GameFontHighlightSmall"
+    ]
+}
