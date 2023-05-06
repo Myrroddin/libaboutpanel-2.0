@@ -26,6 +26,25 @@
         "ACCEPT",
         "CANCEL",
         "GameFontHighlightLarge",
-        "GameFontHighlightSmall"
+        "GameFontHighlightSmall",
+        "UIPanelWindows",
+        "StaticPopupDialogs",
+        "SlashCmdList",
+        "UIDropDownMenu_SetSelectedValue",
+        "UIParentLoadAddOn",
+        "FauxScrollFrame_Update",
+        "ToggleDropDownMenu",
+        "UIDropDownMenu_AddButton",
+        "YES",
+        "UIDropDownMenu_Initialize",
+        "FauxScrollFrame_GetOffset",
+        "GetCursorPosition",
+        "GameMenuButtonAddons",
+        "UIDropDownMenu_CreateInfo",
+        "ReloadUI",
+        "CloseDropDownMenus",
+        "StaticPopup_Show",
+        "GameMenuFrame",
+        "NO"
     ]
 }
