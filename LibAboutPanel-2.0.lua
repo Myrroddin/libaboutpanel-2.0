@@ -203,7 +203,7 @@ elseif locale == "ruRU" then
 	L["Email"] = "Почта"
 	L["License"] = "Лицензия"
 	L["Localizations"] = "Языки"
-	L["on the %s realm"] = "с реалма \\\"%s\\\""
+	L["on the %s realm"] = "с реалма \"%s\""
 	L["Repository"] = "Репозиторий"
 	L["Version"] = "Версия"
 	L["Website"] = "Сайт"
