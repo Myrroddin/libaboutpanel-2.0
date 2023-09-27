@@ -222,8 +222,7 @@ elseif locale == "zhCN" then
 	L["Localizations"] = "本地化"
 	--[[Translation missing --]]
 	L["on the %s realm"] = "on the %s realm"
-	--[[Translation missing --]]
-	L["Repository"] = "Repository"
+	L["Repository"] = "知识库"
 	L["Version"] = "版本"
 	L["Website"] = "网站"
 elseif locale == "zhTW" then
