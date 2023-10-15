@@ -37,7 +37,7 @@
 
 local MAJOR, MINOR = "LibAboutPanel-2.0", 111 -- MINOR incremented manually
 assert(LibStub, MAJOR .. " requires LibStub")
-local AboutPanel, oldminor = LibStub:NewLibrary(MAJOR, MINOR)
+local AboutPanel = LibStub:NewLibrary(MAJOR, MINOR)
 if not AboutPanel then return end  -- no upgrade necessary
 
 AboutPanel.embeds = AboutPanel.embeds or {} -- table containing objects AboutPanel is embedded in.
