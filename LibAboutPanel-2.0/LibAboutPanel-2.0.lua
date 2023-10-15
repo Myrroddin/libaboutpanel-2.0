@@ -48,13 +48,7 @@ AboutPanel.aboutFrame = AboutPanel.aboutFrame or {}
 local setmetatable, tostring, rawset, pairs, pcall = setmetatable, tostring, rawset, pairs, pcall
 -- WoW APIs
 local GetLocale, CreateFrame = GetLocale, CreateFrame
-local GetAddOnMetadata_Orig = C_AddOns and C_AddOns.GetAddOnMetadata or GetAddOnMetadata
-
--- Workaround patch 10.1.0's API change without breaking Classic or Wrath Classic
-local function GetAddOnMetadata_New(name, tag)
-    local retOK, ret1 = pcall(GetAddOnMetadata_Orig, name, tag)
-    if (retOK) then return ret1 end
-end
+local GetAddOnMetadata = C_AddOns and C_AddOns.GetAddOnMetadata or GetAddOnMetadata
 
 -- localization ---------------------------------
 local L = setmetatable({}, {
@@ -255,7 +249,7 @@ local function GetTitle(addon)
 	if locale ~= "enUS" then
 		title = title .. "-" .. locale
 	end
-	return GetAddOnMetadata_New(addon, title) or GetAddOnMetadata_New(addon, "Title")
+	return GetAddOnMetadata(addon, title) or GetAddOnMetadata(addon, "Title")
 end
 
 local function GetNotes(addon)
@@ -263,11 +257,11 @@ local function GetNotes(addon)
 	if locale ~= "enUS" then
 		notes = notes .. "-" .. locale
 	end
-	return GetAddOnMetadata_New(addon, notes) or GetAddOnMetadata_New(addon, "Notes")
+	return GetAddOnMetadata(addon, notes) or GetAddOnMetadata(addon, "Notes")
 end
 
 local function GetAddOnDate(addon)
-	local date = GetAddOnMetadata_New(addon, "X-Date") or GetAddOnMetadata_New(addon, "X-ReleaseDate")
+	local date = GetAddOnMetadata(addon, "X-Date") or GetAddOnMetadata(addon, "X-ReleaseDate")
 	if not date then return end
 
 	date = date:gsub("%$Date: (.-) %$", "%1")
@@ -276,13 +270,13 @@ local function GetAddOnDate(addon)
 end
 
 local function GetAuthor(addon)
-	local author = GetAddOnMetadata_New(addon, "Author")
+	local author = GetAddOnMetadata(addon, "Author")
 	if not author then return end
 
 	author = TitleCase(author)
-	local server = GetAddOnMetadata_New(addon, "X-Author-Server")
-	local guild = GetAddOnMetadata_New(addon, "X-Author-Guild")
-	local faction = GetAddOnMetadata_New(addon, "X-Author-Faction")
+	local server = GetAddOnMetadata(addon, "X-Author-Server")
+	local guild = GetAddOnMetadata(addon, "X-Author-Guild")
+	local faction = GetAddOnMetadata(addon, "X-Author-Faction")
 
 	if server then
 		server = TitleCase(server)
@@ -301,7 +295,7 @@ local function GetAuthor(addon)
 end
 
 local function GetVersion(addon)
-	local version = GetAddOnMetadata_New(addon, "Version")
+	local version = GetAddOnMetadata(addon, "Version")
 	if not version then return end
 
 	version = version:gsub("%.?%$Revision: (%d+) %$", " -rev.".."%1")
@@ -315,17 +309,17 @@ local function GetVersion(addon)
 	-- replace Curseforge/Wowace repository keywords
 	version = version:gsub("@.+", L["Developer Build"])
 
-	local revision = GetAddOnMetadata_New(addon, "X-Project-Revision")
+	local revision = GetAddOnMetadata(addon, "X-Project-Revision")
 	version = revision and version.." -rev."..revision or version
 	return version
 end
 
 local function GetCategory(addon)
-	return GetAddOnMetadata_New(addon, "X-Category")
+	return GetAddOnMetadata(addon, "X-Category")
 end
 
 local function GetLicense(addon)
-	local license = GetAddOnMetadata_New(addon, "X-License") or GetAddOnMetadata_New(addon, "X-Copyright")
+	local license = GetAddOnMetadata(addon, "X-License") or GetAddOnMetadata(addon, "X-Copyright")
 	if not license then return end
 
 	local checkCaps = strmatch(license, "^MIT.-$") or strmatch(license, "^GNU.-$")
@@ -342,7 +336,7 @@ local function GetLicense(addon)
 end
 
 local function GetLocalizations(addon)
-	local translations = GetAddOnMetadata_New(addon, "X-Localizations")
+	local translations = GetAddOnMetadata(addon, "X-Localizations")
 	if translations then
 		translations = translations:gsub("enUS", LFG_LIST_LANGUAGE_ENUS)
 		translations = translations:gsub("deDE", LFG_LIST_LANGUAGE_DEDE)
@@ -360,21 +354,21 @@ local function GetLocalizations(addon)
 end
 
 local function GetCredits(addon)
-	return GetAddOnMetadata_New(addon, "X-Credits")
+	return GetAddOnMetadata(addon, "X-Credits")
 end
 
 local function GetWebsite(addon)
-	local websites = GetAddOnMetadata_New(addon, "X-Website")
+	local websites = GetAddOnMetadata(addon, "X-Website")
 	if not websites then return end
 
 	return "|cff77ccff"..websites:gsub("https?://", "")
 end
 
 local function GetEmail(addon)
-	local email = GetAddOnMetadata_New(addon, "X-Email") or GetAddOnMetadata_New(addon, "Email") or GetAddOnMetadata_New(addon, "eMail")
+	local email = GetAddOnMetadata(addon, "X-Email") or GetAddOnMetadata(addon, "Email") or GetAddOnMetadata(addon, "eMail")
 	if not email then return end
 
-	return "|cff77ccff"..GetAddOnMetadata_New(addon, "X-Email")
+	return "|cff77ccff"..GetAddOnMetadata(addon, "X-Email")
 end
 
 -- LibAboutPanel stuff --------------------------
