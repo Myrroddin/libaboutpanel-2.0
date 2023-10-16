@@ -41,7 +41,7 @@ function MyAddon:DoSomething()
 end
 ```
 
-Please be aware that capitalization in the .pkgmeta and .toc files matters, and the different slashes ("/" in .pkgmeta and "\" in .toc files). These conventions are standards set by others. Like any other WoW addon or library, LibAboutPanel-2.0 must follow the standards.
+Please be aware that capitalization in the .pkgmeta and .toc files matters, and the different slashes ("/" in .pkgmeta and "\\" in .toc files). These conventions are standards set by others. Like any other WoW addon or library, LibAboutPanel-2.0 must follow the standards.
 
 ## Retail, Wrath, or Classic
 LibAboutPanel-2.0 should work in all versions of the game.
