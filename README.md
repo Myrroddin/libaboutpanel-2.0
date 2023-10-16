@@ -18,17 +18,28 @@ Step two is in your ToC file, with either of the above methods, load the .xml fi
 
 The final step is embedding LibAboutPanel-2.0 into your addon to use its APIs. Embedding LAP is optional yet recommended.
 
-    -- using Ace3
-     local MyAddon = LibStub("AceAddon-3.0"):NewAddon("MyAddon", "LibAboutPanel-2.0")
+```lua
+-- using Ace3
+local MyAddon = LibStub("AceAddon-3.0"):NewAddon("MyAddon", "LibAboutPanel-2.0")
 
-    -- not using Ace3
-    local folderName, MyAddon = ...
-    LibStub("LibAboutPanel-2.0"):Embed(MyAddon)
+-- not using Ace3
+local folderName, MyAddon = ...
+LibStub("LibAboutPanel-2.0"):Embed(MyAddon)
 
-    -- now you can use the APIs
-    function MyAddon:DoSomething()
-        self:CreateAboutPanel() -- not strictly accurate, see docs
-    end
+-- now you can use the APIs
+function MyAddon:DoSomething()
+    -- self refers to MyAddon
+    self:CreateAboutPanel() -- not strictly accurate, see docs
+end
+
+-- not embedding LAP
+local folderName, MyAddon = ...
+local LAP = LibStub("LibAboutPanel-2.0")
+
+function MyAddon:DoSomething()
+    LAP:CreateAboutPanel() -- not strictly accurate, see docs
+end
+```
 
 Please be aware that capitalization in the .pkgmeta and .toc files matters, and the different slashes ("/" in .pkgmeta and "\" in .toc files). These conventions are standards set by others. Like any other WoW addon or library, LibAboutPanel-2.0 must follow the standards.
 
