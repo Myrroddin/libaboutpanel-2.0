@@ -2,15 +2,10 @@
 An embedded library that scans your AddOn's ToC to display that information either as a seperate __About__ button in the Interface Options panel, or as part of AceConfig-3.0 options table.
 
 ## Getting LAP into your own addon
-Step one is to add LibAboutPanel-2.0 to your addon's .pkgmeta file. Assuming you have a folder named Libs into which you are adding all your libs, the .pkgmeta can look one of two ways. If you want the full package of LibAboutPanel-2.0, which includes LibStub, CallbackHandler-1.0, and AceConfig-3.0 and is intended for users who install LAP as a standalone addon (which you cannot control), the .pkgmeta section would look like the following:
+Step one is to add LibAboutPanel-2.0 to your addon's .pkgmeta file. Assuming you have a folder named Libs into which you are adding all your libs, the .pkgmeta section would look like the following:
 
 `externals:
   Libs/LibAboutPanel-2.0: https://github.com/Myrroddin/libaboutpanel-2.0`
-
-The second, **preferred**, method is to get the "slim" version of LibAboutPanel-2.0, which does not include LibStub, CallbackHandler-1.0, or AceConfig-3.0, presumably because you have them loaded already. In that case, do this:
-
-`externals:
-  Libs/LibAboutPanel-2.0: https://github.com/Myrroddin/libaboutpanel-2.0/LibAboutPanel-2.0`
 
 Step two is in your ToC file, with either of the above methods, load the .xml file that loads LibAboutPanel-2.0:
 
