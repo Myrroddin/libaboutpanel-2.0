@@ -1,5 +1,5 @@
 ## Interface: 100200
-## Interface-Classic: 11405
+## Interface-Classic: 11500
 ## Interface-Wrath: 30403
 ## Title: Lib: AboutPanel-2.0
 ## Notes: Adds an AddOn's ToC fields to its options table
@@ -16,6 +16,8 @@
 ## X-License: MIT License
 ## X-Category: Library
 ## LoadOnDemand: 1
+
+## OptionalDeps: LibStub, CallbackHandler-1.0, Ace3
 
 LibStub\LibStub.lua
 CallbackHandler-1.0\CallbackHandler-1.0.lua
