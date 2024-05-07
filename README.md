@@ -2,7 +2,7 @@
 An embedded library that scans your AddOn's ToC to display that information either as a seperate __About__ button in the Interface Options panel, or as part of AceConfig-3.0 options table.
 
 ## Getting LAP into your own addon
-Step one is to add LibAboutPanel-2.0 to your addon's .pkgmeta file. Assuming you have a folder named Libs into which you are adding all your libs, the .pkgmeta section would look like one of the following:
+**Step one** is to add LibAboutPanel-2.0 to your addon's .pkgmeta file. Assuming you have a folder named Libs into which you are adding all your libs, the .pkgmeta section would look like one of the following:
 
 ### Old method
 The old method still works to get the full fat version of LibAboutPanel-2.0, which includes LibStub, CallbackHandler-1.0, and AceConfig-3.0. Use this method if you are not certain what you need for your addon.
@@ -22,11 +22,11 @@ externals:
       curse-slug: libaboutpanel-2-0
 ```
 
-Step two is in your ToC file, with either of the above methods, load the .xml file that loads LibAboutPanel-2.0:
+**Step two** is in your ToC file, with either of the above methods, load the .xml file that loads LibAboutPanel-2.0:
 
 `Libs\LibAboutPanel-2.0\lib.xml`
 
-The final step is embedding LibAboutPanel-2.0 into your addon to use its APIs. Embedding LAP is optional yet recommended.
+**Step three** is embedding LibAboutPanel-2.0 into your addon to use its APIs. Embedding LAP is optional yet recommended.
 
 ```lua
 -- using Ace3
@@ -86,7 +86,7 @@ You can find the [API here](https://legacy.curseforge.com/wow/addons/libaboutpan
 * X-Copyright `Copyright` and `(c)` are translated
 
 ## Localization
-There are several phrases and words that [need translating](https://www.wowace.com/addons/libaboutpanel-2-0/localization/). Please help and contribute.
+There are several phrases and words that [need translating](https://legacy.curseforge.com/wow/addons/libaboutpanel-2-0/localization). Please help and contribute.
 
 ## Bugs and suggestions
-There is a [ticket tracker](https://www.wowace.com/addons/libaboutpanel-2-0/tickets/) for that.
+There is a [ticket tracker](https://github.com/Myrroddin/libaboutpanel-2.0/issues) for suggesting fixes or improvements.
