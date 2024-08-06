@@ -37,7 +37,7 @@
 
 local MAJOR, MINOR = "LibAboutPanel-2.0", 112 -- MINOR incremented manually
 assert(LibStub, MAJOR .. " requires LibStub")
----@class table
+---@class AbouPanel: table
 local AboutPanel = LibStub:NewLibrary(MAJOR, MINOR)
 if not AboutPanel then return end  -- no upgrade necessary
 
@@ -492,7 +492,7 @@ function AboutPanel:CreateAboutPanel(addon, parent)
 
 		frame.name = not parent and addon or L["About"]
 		frame.parent = parent
-		InterfaceOptions_AddCategory(frame)
+		Settings.RegisterCanvasLayoutCategory(frame)
 		AboutPanel.aboutFrame[addon] = frame
 	end
 

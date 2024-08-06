@@ -45,6 +45,7 @@
         "CloseDropDownMenus",
         "StaticPopup_Show",
         "GameMenuFrame",
-        "NO"
+        "NO",
+        "Settings"
     ]
 }
