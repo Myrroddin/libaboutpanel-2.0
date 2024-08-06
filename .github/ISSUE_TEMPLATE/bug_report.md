@@ -21,4 +21,4 @@ Steps to reproduce the behavior:
 If applicable, could you add screenshots to help explain your problem?
 
 **BugSack error capture**
-Paste error code here, using Markdown highlighting.
+Paste the error code here, using [Markdown highlighting](https://github.com/im-luka/markdown-cheatsheet). Use `` ```lua``` `` to highlight, please.
