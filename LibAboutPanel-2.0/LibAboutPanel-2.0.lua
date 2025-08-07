@@ -37,7 +37,6 @@
 
 local MAJOR, MINOR = "LibAboutPanel-2.0", 113 -- MINOR incremented manually
 assert(LibStub, MAJOR .. " requires LibStub")
----@class AbouPanel: table
 local AboutPanel = LibStub:NewLibrary(MAJOR, MINOR)
 if not AboutPanel then return end  -- no upgrade necessary
 
@@ -49,7 +48,7 @@ AboutPanel.aboutFrame = AboutPanel.aboutFrame or {}
 local setmetatable, tostring, rawset, pairs = setmetatable, tostring, rawset, pairs
 -- WoW APIs
 local GetLocale, CreateFrame = GetLocale, CreateFrame
-local GetAddOnMetadata = C_AddOns and C_AddOns.GetAddOnMetadata
+local GetAddOnMetadata = C_AddOns.GetAddOnMetadata
 
 -- localization ---------------------------------
 local L = setmetatable({}, {

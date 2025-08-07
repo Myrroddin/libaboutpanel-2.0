@@ -1,32 +1,21 @@
 # LibAboutPanel-2.0
 
-An embedded library that scans your AddOn's ToC to display that information either as a seperate __About__ button in the Interface Options panel, or as part of AceConfig-3.0 options table.
+An embedded library that scans your AddOn's ToC to display its fields either as a seperate `About` button in the Interface Options panel, or as part of AceConfig-3.0 options table.
 
 ## Getting LAP into your own addon
 
+Follow the steps below.
+
 **Step one** is to add LibAboutPanel-2.0 to your addon's .pkgmeta file. Assuming you have a folder named Libs into which you are adding all your libs, the .pkgmeta section would look like one of the following:
-
-### Old method
-
-The old method still works to get the full fat version of LibAboutPanel-2.0, which includes LibStub, CallbackHandler-1.0, and AceConfig-3.0. Use this method if you are not certain what you need for your addon.
-
-```lua
-externals:
-  Libs/LibAboutPanel-2.0: https://github.com/Myrroddin/libaboutpanel-2.0
-```
-
-### New method
-
-If all you need is LibAboutPanel-2.0 because you either do not need AceConfig-3.0 or you have added LibStub, CallbackHandler-1.0, and AceConfig-3.0 as their own folders, use this second method to get the slim version of LibAboutPanel-2.0, which includes the main Lua file and the XML loader, with nothing else.
 
 ```lua
 externals:
   Libs/LibAboutPanel-2.0:
-      url: https://github.com/Myrroddin/libaboutpanel-2.0/LibAboutPanel-2.0
-      curse-slug: libaboutpanel-2-0
+    url: https://github.com/Myrroddin/libaboutpanel-2.0/LibAboutPanel-2.0
+    curse-slug: libaboutpanel-2-0
 ```
 
-**Step two** is in your ToC file, with either of the above methods, load the .xml file that loads LibAboutPanel-2.0:
+**Step two** is loading the lib in your ToC file:
 
 `Libs\LibAboutPanel-2.0\lib.xml`
 
@@ -57,7 +46,7 @@ end
 
 Please be aware that capitalization in the .pkgmeta and .toc files matters, and the different slashes ("/" in .pkgmeta and "\\" in .toc files). These conventions are standards set by others. Like any other WoW addon or library, LibAboutPanel-2.0 must follow the standards.
 
-## Retail, Cataclysm, or Classic
+## Compatible game versions
 
 LibAboutPanel-2.0 should work in all versions of the game.
 
@@ -72,8 +61,8 @@ You can find the [API and example here](https://github.com/Myrroddin/libaboutpan
 ## Features that are new or different than Ackis' LibAboutPanel
 
 * More localization. LAP2 uses global strings to translate factions, locale names, etc. It also has more translatable strings than the original.
-* Its API is embedded, so __MyAddOn:API()__ is the norm.
-* LAP2 has an API that supports AceConfig-3.0 options tables, thus the About panel can be displayed as a tab, part of a tree, etc.
+* Its API is embedded, so `MyAddOn:API()` is the norm.
+* LAP2 has an API that supports AceConfig-3.0 options tables, thus the `About` panel can be displayed as a tab, part of a tree, etc.
 
 ## List of supported ToC fields
 
@@ -84,11 +73,11 @@ You can find the [API and example here](https://github.com/Myrroddin/libaboutpan
 * X-Date or X-ReleaseDate
 * X-Revision including `wowi:revision`
 * X-Author-Guild
-* X-Author-Faction (Horde or Alliance) translated
+* X-Author-Faction (`Horde` or `Alliance`) translated
 * X-Author-Server
 * X-Website
-* X-Email
-* X-Localizations (enUS, deDE, etc) which are translated themselves. Note the z not s
+* X-Email including X-eMail, Email, and eMail
+* X-Localizations (`enUS`, `deDE`, etc) abbreviation keys which are translated themselves. Note the z not s
 * X-Credits
 * X-Category
 * X-License `All Rights Reserved` is translated
