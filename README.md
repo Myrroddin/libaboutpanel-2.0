@@ -6,7 +6,9 @@ An embedded library that scans your AddOn's ToC to display its fields either as 
 
 Follow the steps below.
 
-**Step one** is to add LibAboutPanel-2.0 to your addon's .pkgmeta file. Assuming you have a folder named Libs into which you are adding all your libs, the .pkgmeta section would look like one of the following:
+### Your addon's .pkgmeta file
+
+Assuming you have a folder named Libs into which you are adding all your libs, the .pkgmeta section would look like the following:
 
 ```lua
 externals:
@@ -15,17 +17,21 @@ externals:
     curse-slug: libaboutpanel-2-0
 ```
 
-**Step two** is loading the lib in your ToC file:
+### Your addon's .toc file
+
+This is quite simple.
 
 `Libs\LibAboutPanel-2.0\lib.xml`
 
-**Step three** is embedding LibAboutPanel-2.0 into your addon to use its APIs. Embedding LAP is optional yet recommended.
+### Using LibAboutPanel-2.0 in your addon
+
+Embedding LibAboutPanel-2.0 is optional yet recommended.
 
 ```lua
--- using Ace3
+-- using Ace3, embedded
 local MyAddon = LibStub("AceAddon-3.0"):NewAddon("MyAddon", "LibAboutPanel-2.0")
 
--- not using Ace3
+-- not using Ace3, embedded
 local folderName, MyAddon = ...
 LibStub("LibAboutPanel-2.0"):Embed(MyAddon)
 
@@ -35,7 +41,7 @@ function MyAddon:DoSomething()
     self:CreateAboutPanel() -- not strictly accurate, see docs
 end
 
--- not embedding LAP
+-- if you are not embedding LAP
 local folderName, MyAddon = ...
 local LAP = LibStub("LibAboutPanel-2.0")
 
@@ -48,7 +54,7 @@ Please be aware that capitalization in the .pkgmeta and .toc files matters, and 
 
 ## Compatible game versions
 
-LibAboutPanel-2.0 should work in all versions of the game.
+LibAboutPanel-2.0 should work for all official Blizzard versions of the game.
 
 ## Not a drop-in replacement
 
