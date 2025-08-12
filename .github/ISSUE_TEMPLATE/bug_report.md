@@ -1,8 +1,8 @@
 ---
-name: Bug report
+name: Bug Report
 about: Create a report to help us improve
-title: "[BUG]"
-labels: bug
+title: ""
+labels: bug, improvement, invalid, fixed, declined
 assignees: Myrroddin
 
 ---
@@ -12,7 +12,7 @@ A clear and concise description of what the bug is.
 
 **To Reproduce**
 Steps to reproduce the behavior:
-1. WoW version (SoD, hardcore, vanilla, Cataclysm, retail):
+1. WoW version (SoD, hardcore, vanilla, Mists, retail, etc):
 2. LibAboutPanel-2.0 version:
 3. WoW text language:
 4. Capture error code with BugSack and paste below

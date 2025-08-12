@@ -8,10 +8,13 @@ Follow the steps below.
 
 ### Your addon's .pkgmeta file
 
-Assuming you have a folder named Libs into which you are adding all your libs, the .pkgmeta section would look like the following:
+Assuming you have a folder named `Libs` into which you are adding all your libs, the .pkgmeta section would look like the following:
 
 ```lua
 externals:
+  Libs/Libstub: https://repos.curseforge.com/wow/libstub/trunk
+  Libs/CallbackHandler-1.0: https://repos.curseforge.com/wow/callbackhandler/trunk/CallbackHandler-1.0
+  Libs/AceConfig-3.0: https://repos.curseforge.com/wow/ace3/trunk/AceConfig-3.0
   Libs/LibAboutPanel-2.0:
     url: https://github.com/Myrroddin/libaboutpanel-2.0/LibAboutPanel-2.0
     curse-slug: libaboutpanel-2-0
@@ -19,9 +22,16 @@ externals:
 
 ### Your addon's .toc file
 
-This is quite simple.
+This is quite simple. Add these lines to your .toc file, again assuming you have a folder named `Libs` into which you are adding all your libs. Because LibAboutPanel-2.0 requires LibStub, CallbackHandler-1.0, and AceConfig-3.0 (part of the Ace3 suite of libraries), ***you must list ALL of them in the OptionalDeps line of your .toc*** in the following order. Should you use any other components of Ace3 in your addon, list them in the same order as found in [Ace3.toc](https://github.com/WoWUIDev/Ace3/blob/master/Ace3.toc).
 
-`Libs\LibAboutPanel-2.0\lib.xml`
+```lua
+## OptionalDeps: LibStub, CallbackHandler-1.0, Ace3, LibAboutPanel-2.0
+
+Libs\LibStub\LibStub.lua
+Libs\CallbackHandler-1.0\CallbackHandler-1.0.xml
+Libs\AceConfig-3.0\AceConfig-3.0.xml
+Libs\LibAboutPanel-2.0\lib.xml
+```
 
 ### Using LibAboutPanel-2.0 in your addon
 
@@ -35,16 +45,17 @@ local MyAddon = LibStub("AceAddon-3.0"):NewAddon("MyAddon", "LibAboutPanel-2.0")
 local folderName, MyAddon = ...
 LibStub("LibAboutPanel-2.0"):Embed(MyAddon)
 
--- now you can use the APIs
-function MyAddon:DoSomething()
-    -- self refers to MyAddon
-    self:CreateAboutPanel() -- not strictly accurate, see docs
-end
-
 -- if you are not embedding LAP
 local folderName, MyAddon = ...
 local LAP = LibStub("LibAboutPanel-2.0")
 
+----- now you can use the lib's APIs in your addon -----
+-- using the lib when embedded:
+function: MyAddon:DoSomething()
+    MyAddon:CreateAboutPanel() -- not strictly accurate, see docs
+end
+
+-- using the lib when not embedded:
 function MyAddon:DoSomething()
     LAP:CreateAboutPanel() -- not strictly accurate, see docs
 end
