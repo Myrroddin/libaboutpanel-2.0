@@ -21,4 +21,4 @@
 LibStub\LibStub.lua
 CallbackHandler-1.0\CallbackHandler-1.0.lua
 AceConfig-3.0\AceConfig-3.0.xml
-lib.xml
+LibAboutPanel-2.0\lib.xml
