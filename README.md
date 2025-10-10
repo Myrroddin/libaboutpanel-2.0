@@ -102,7 +102,7 @@ You can find the [API and example here](https://github.com/Myrroddin/libaboutpan
 
 ## Localization
 
-There are several phrases and words that [need translating](https://legacy.curseforge.com/wow/addons/libaboutpanel-2-0/localization). Please help and contribute.
+There are several phrases and words that [need translating](https://legacy.curseforge.com/wow/addons/libaboutpanel-2-0/localization), or at least verifying, as I used ChatGPT to translate the library. Please help and contribute.
 
 ## Bugs and suggestions
 
