@@ -1,0 +1,51 @@
+# .gitignore for WoW Lua Addon Development (Windows/macOS)
+
+# OS-specific files
+.DS_Store
+Thumbs.db
+
+# Linux-specific files
+*.lock
+*.pid
+*~
+.Trash-*
+.fuse_hidden*
+.directory
+.gvfs/
+
+# VS Code and editor folders/files
+.vscode/
+.idea/
+*.swp
+*.bak
+*.tmp
+
+# MacOS Finder files
+._*
+
+# Log files
+*.log
+
+# WoW Addon packaging artifacts (if any)
+*.zip
+*.rar
+
+# Miscellaneous
+*.old
+*.orig
+
+# Node/npm (if ever used for tooling)
+node_modules/
+
+# Ignore test output
+/test-output/
+
+# Ignore user-specific config
+*.user
+
+# Ignore compiled Python (if ever used for tooling)
+__pycache__/
+*.pyc
+
+# Ignore workspace settings
+*.code-workspace

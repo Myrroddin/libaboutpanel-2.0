@@ -10,3 +10,6 @@ ignore:
   - LibStub/tests
   - CallbackHandler-1.0/CallbackHandler-1.0.xml
   - README.md
+  - WIKI.md
+  - LICENSE.txt
+  - '*.md'
