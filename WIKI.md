@@ -10,6 +10,9 @@
 
 # LibAboutPanel-2.0 Wiki
 
+## Quick Start
+See the [README.md](./README.md) for integration steps, dependencies, and a brief overview.
+
 ## Ace3 Example Usage
 
 Below is a quick example of integrating LibAboutPanel-2.0 with Ace3 in your addon:
@@ -45,7 +48,7 @@ function MyAddOn:OnInitialize()
 end
 ```
 
-See the [README.md](../README.md) for integration steps, dependencies, and a brief overview.
+See the [README.md](./README.md) for integration steps, dependencies, and a brief overview.
 
 ## API Reference
 
@@ -109,4 +112,4 @@ externals:
 - The `curse-slug` ensures proper packaging and updates via CurseForge.
 
 ---
-For a quick overview and integration steps, see [README.md](../README.md).
+For a quick overview and integration steps, see [README.md](./README.md).

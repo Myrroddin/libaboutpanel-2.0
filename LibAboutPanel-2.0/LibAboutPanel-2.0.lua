@@ -1,56 +1,26 @@
---- **LibAboutPanel-2.0** either creates an "About" panel in your AddOn's
--- Interface/AddOns frame or within said AddOn's options table
--- The word //About// will be localized, among other things, automatically
--- API includes:
--- * **CreateAboutPanel** which works like Ackis' LibAboutPanel
--- * **AboutOptionsTable** which embeds the panel within AceConfig-3.0 options table
---
--- @usage
--- function MyAddOn:OnInitialize()
---     local options = {
---         name = "MyAddOn",
---         type = "group",
---         args = {
---             enableAddOn = {
---                 order = 10,
---                 name = ENABLE, -- use Blizzard's global string
---                 type = "toggle",
---                 get = function() return self.db.profile.enableAddOn end,
---                 set = function(info, value)
---                     self.db.profile.enableAddOn = value
---                     if value then
---                         self:OnEnable()
---                     else
---                         self:OnDisable()
---                     end
---                 end
---             }
---         }
---     }
---     -- support for LibAboutPanel-2.0
---     options.args.aboutTab = self:AboutOptionsTable("MyAddOn")
---     options.args.aboutTab.order = -1 -- -1 means "put it last"
+--[[
+LibAboutPanel-2.0: WoW Lua library for displaying addon metadata in Blizzard's Interface Options and AceConfig-3.0 tables.
+Supports Classic Era, Classic, and Retail. This file contains the core implementation and helper functions.
+--]]
 
---    -- Register your options with AceConfigRegistry
---    LibStub("AceConfig-3.0"):RegisterOptionsTable("MyAddOn", options)
--- end
+local MAJOR, MINOR = "LibAboutPanel-2.0", 114 -- Library name and version; bump MINOR for each revision
+assert(LibStub, MAJOR .. " requires LibStub") -- LibStub is a lightweight lib loader
+local AboutPanel, oldMinor = LibStub:NewLibrary(MAJOR, MINOR)
+if not AboutPanel then return end -- skip if an equal/newer version is already loaded
 
-local MAJOR, MINOR = "LibAboutPanel-2.0", 113 -- MINOR incremented manually
-assert(LibStub, MAJOR .. " requires LibStub")
-local AboutPanel = LibStub:NewLibrary(MAJOR, MINOR)
-if not AboutPanel then return end  -- no upgrade necessary
+-- Persistent tables: preserve state across UI reloads and allow caching for performance
+AboutPanel.embeds		= AboutPanel.embeds or {} -- Tracks addons this library has been embedded into
+AboutPanel.aboutTable	= AboutPanel.aboutTable or {} -- Caches AceConfig options tables per addon
+AboutPanel.aboutFrame	= AboutPanel.aboutFrame or {} -- Caches Blizzard Settings frames per addon
 
-AboutPanel.embeds = AboutPanel.embeds or {} -- table containing objects AboutPanel is embedded in.
-AboutPanel.aboutTable = AboutPanel.aboutTable or {} -- tables for
-AboutPanel.aboutFrame = AboutPanel.aboutFrame or {}
-
--- Lua APIs
-local setmetatable, tostring, rawset, pairs = setmetatable, tostring, rawset, pairs
--- WoW APIs
+-- Localize frequently used Lua and WoW API functions for performance
+local setmetatable, tostring, rawset, pairs, strmatch = setmetatable, tostring, rawset, pairs, strmatch
 local GetLocale, CreateFrame = GetLocale, CreateFrame
-local GetAddOnMetadata = C_AddOns.GetAddOnMetadata
+local GetAddOnMetadata = C_AddOns.GetAddOnMetadata -- retrieves .toc metadata like Title, Notes, Author, etc.
+local format, gsub, upper, lower = string.format, string.gsub, string.upper, string.lower
 
--- localization ---------------------------------
+-- Localization shim: returns the key itself if no translation exists.
+-- This allows the library to function even if translations are missing.
 local L = setmetatable({}, {
 	__index = function(tab, key)
 		local value = tostring(key)
@@ -59,11 +29,14 @@ local L = setmetatable({}, {
 	end
 })
 
+-- Load localization tables for supported languages if available
 local locale = GetLocale()
 if locale == "deDE" then
 	--@localization(locale="deDE", format="lua_additive_table")@
 elseif locale == "esES" or locale == "esMX" then
 	--@localization(locale="esES", format="lua_additive_table")@
+elseif locale == "esMX" then
+	--@localization(locale="esMX", format="lua_additive_table")@
 elseif locale == "frFR" then
 	--@localization(locale="frFR", format="lua_additive_table")@
 elseif locale == "itIT" then
@@ -80,28 +53,30 @@ elseif locale == "zhTW" then
 	--@localization(locale="zhTW", format="lua_additive_table")@
 end
 
--- handy fuction to create Title Case -----------
+-- -----------------------------------------------------
+-- Helper functions to standardize metadata lookups and parsing from .toc files
+-- -----------------------------------------------------
+
+-- Converts a string to title case (e.g., "john DOE" -> "John Doe")
 local function TitleCase(str)
-	str = str:gsub("(%a)(%a+)", function(a, b) return a:upper()..b:lower() end)
-	return str
+	return str and gsub(str, "(%a)(%a+)", function(a, b) return upper(a) .. lower(b) end)
 end
 
-local function GetTitle(addon)
-	local title = "Title"
-	if locale ~= "enUS" then
-		title = title .. "-" .. locale
+-- Fetches metadata from the addon .toc, using localized fields if available
+local function GetMeta(addon, field, localized)
+	if localized and locale ~= "enUS" then
+		local v = GetAddOnMetadata(addon, field .. "-" .. locale)
+		if v then return v end
 	end
-	return GetAddOnMetadata(addon, title) or GetAddOnMetadata(addon, "Title")
+	return GetAddOnMetadata(addon, field)
 end
 
-local function GetNotes(addon)
-	local notes = "Notes"
-	if locale ~= "enUS" then
-		notes = notes .. "-" .. locale
-	end
-	return GetAddOnMetadata(addon, notes) or GetAddOnMetadata(addon, "Notes")
-end
+local function GetTitle(addon)		return GetMeta(addon, "Title", true) end
+local function GetNotes(addon)		return GetMeta(addon, "Notes", true) end
+local function GetCredits(addon)	return GetAddOnMetadata(addon, "X-Credits") end
+local function GetCategory(addon)	return GetAddOnMetadata(addon, "X-Category") end
 
+-- Parses and normalizes date fields from .toc, handling repo keyword expansion
 local function GetAddOnDate(addon)
 	local date = GetAddOnMetadata(addon, "X-Date") or GetAddOnMetadata(addon, "X-ReleaseDate")
 	if not date then return end
@@ -111,390 +86,278 @@ local function GetAddOnDate(addon)
 	return date
 end
 
+-- Formats author field, appending guild/server/faction info if present
 local function GetAuthor(addon)
 	local author = GetAddOnMetadata(addon, "Author")
 	if not author then return end
-
 	author = TitleCase(author)
-	local server = GetAddOnMetadata(addon, "X-Author-Server")
-	local guild = GetAddOnMetadata(addon, "X-Author-Guild")
-	local faction = GetAddOnMetadata(addon, "X-Author-Faction")
+
+	local server	= GetAddOnMetadata(addon, "X-Author-Server")
+	local guild		= GetAddOnMetadata(addon, "X-Author-Guild")
+	local faction	= GetAddOnMetadata(addon, "X-Author-Faction")
 
 	if server then
-		server = TitleCase(server)
-		author = author .. " " .. L["on the %s realm"]:format(server) .. "."
+		author = author .. " " .. format(L["on the %s realm"], TitleCase(server)) .. "."
 	end
 	if guild then
-	author = author .. " " .. "<" .. guild .. ">"
+		author = author .. " <" .. guild .. ">"
 	end
 	if faction then
 		faction = TitleCase(faction)
-		faction = faction:gsub("Alliance", FACTION_ALLIANCE)
-		faction = faction:gsub("Horde", FACTION_HORDE)
-		author = author .. " " .. "(" .. faction .. ")"
+		faction = gsub(faction, "Alliance", FACTION_ALLIANCE)
+		faction = gsub(faction, "Horde", FACTION_HORDE)
+		author = author .. " (" .. faction .. ")"
 	end
 	return author
 end
 
+-- Parses version field, handling repo keywords and developer build tags
 local function GetVersion(addon)
 	local version = GetAddOnMetadata(addon, "Version")
 	if not version then return end
 
-	version = version:gsub("%.?%$Revision: (%d+) %$", " -rev.".."%1")
-	version = version:gsub("%.?%$Rev: (%d+) %$", " -rev.".."%1")
-	version = version:gsub("%.?%$LastChangedRevision: (%d+) %$", " -rev.".."%1")
-
-	-- replace repository keywords
-	version = version:gsub("r2", L["Repository"]) -- Curse
-	version = version:gsub("wowi:revision", L["Repository"]) -- WoWInterface
-
-	-- replace Curseforge/Wowace repository keywords
-	version = version:gsub("@.+", L["Developer Build"])
+	version = gsub(version, "%.?%$Revision: (%d+) %$", " -rev.%1")
+	version = gsub(version, "%.?%$Rev: (%d+) %$", " -rev.%1")
+	version = gsub(version, "%.?%$LastChangedRevision: (%d+) %$", " -rev.%1")
+	version = gsub(version, "r2", L["Repository"])
+	version = gsub(version, "wowi:revision", L["Repository"])
+	version = gsub(version, "@.+", L["Developer Build"])
 
 	local revision = GetAddOnMetadata(addon, "X-Project-Revision")
-	version = revision and version.." -rev."..revision or version
+	if revision then version = version .. " -rev." .. revision end
 	return version
 end
 
-local function GetCategory(addon)
-	return GetAddOnMetadata(addon, "X-Category")
-end
-
+-- Normalizes and translates license/copyright fields
 local function GetLicense(addon)
 	local license = GetAddOnMetadata(addon, "X-License") or GetAddOnMetadata(addon, "X-Copyright")
 	if not license then return end
 
-	local checkCaps = strmatch(license, "^MIT.-$") or strmatch(license, "^GNU.-$")
-	if not checkCaps then
+	if not (strmatch(license, "^MIT") or strmatch(license, "^GNU")) then
 		license = TitleCase(license)
 	end
-
-	license = license:gsub("Copyright", L["Copyright"] .. " " .. "©")
-	license = license:gsub("%([cC]%)", "©")
-	license = license:gsub("© ©", "©")
-	license = license:gsub("  ", " ")
-	license = license:gsub("[aA]ll [rR]ights [rR]eserved", L["All Rights Reserved"])
+	license = gsub(license, "Copyright", L["Copyright"] .. " ©")
+	license = gsub(license, "%([cC]%)", "©")
+	license = gsub(license, "© ©", "©")
+	license = gsub(license, "  ", " ")
+	license = gsub(license, "[aA]ll [rR]ights [rR]eserved", L["All Rights Reserved"])
 	return license
 end
 
+-- Maps locale abbreviations to Blizzard's global language constants
+local localeMap = {
+	["enUS"] = LFG_LIST_LANGUAGE_ENUS, ["deDE"] = LFG_LIST_LANGUAGE_DEDE,
+	["esES"] = LFG_LIST_LANGUAGE_ESES, ["esMX"] = LFG_LIST_LANGUAGE_ESMX,
+	["frFR"] = LFG_LIST_LANGUAGE_FRFR, ["itIT"] = LFG_LIST_LANGUAGE_ITIT,
+	["koKR"] = LFG_LIST_LANGUAGE_KOKR, ["ptBR"] = LFG_LIST_LANGUAGE_PTBR,
+	["ruRU"] = LFG_LIST_LANGUAGE_RURU, ["zhCN"] = LFG_LIST_LANGUAGE_ZHCN,
+	["zhTW"] = LFG_LIST_LANGUAGE_ZHTW
+}
 local function GetLocalizations(addon)
 	local translations = GetAddOnMetadata(addon, "X-Localizations")
 	if translations then
-		translations = translations:gsub("enUS", LFG_LIST_LANGUAGE_ENUS)
-		translations = translations:gsub("deDE", LFG_LIST_LANGUAGE_DEDE)
-		translations = translations:gsub("frFR", LFG_LIST_LANGUAGE_FRFR)
-		translations = translations:gsub("koKR", LFG_LIST_LANGUAGE_KOKR)
-		translations = translations:gsub("ruRU", LFG_LIST_LANGUAGE_RURU)
-		translations = translations:gsub("itIT", LFG_LIST_LANGUAGE_ITIT)
-		translations = translations:gsub("ptBR", LFG_LIST_LANGUAGE_PTBR)
-		translations = translations:gsub("zhCN", LFG_LIST_LANGUAGE_ZHCN)
-		translations = translations:gsub("zhTW", LFG_LIST_LANGUAGE_ZHTW)
-		translations = translations:gsub("esES", LFG_LIST_LANGUAGE_ESES)
-		translations = translations:gsub("esMX", LFG_LIST_LANGUAGE_ESMX)
+		for k, v in pairs(localeMap) do
+			translations = translations:gsub(k, v)
+		end
 	end
 	return translations
 end
 
-local function GetCredits(addon)
-	return GetAddOnMetadata(addon, "X-Credits")
-end
-
+-- Retrieves website and email fields, formatting for display/copy
 local function GetWebsite(addon)
-	local websites = GetAddOnMetadata(addon, "X-Website")
-	if not websites then return end
-
-	return "|cff77ccff"..websites:gsub("https?://", "")
+	local site = GetAddOnMetadata(addon, "X-Website")
+	return site and "|cff77ccff" .. gsub(site, "https?://", "")
 end
 
 local function GetEmail(addon)
 	local email = GetAddOnMetadata(addon, "X-Email") or GetAddOnMetadata(addon, "Email") or GetAddOnMetadata(addon, "eMail")
-	if not email then return end
-
-	return "|cff77ccff"..GetAddOnMetadata(addon, "X-Email")
+	return email and "|cff77ccff" .. email
 end
 
--- LibAboutPanel stuff --------------------------
-local editbox = CreateFrame("EditBox", nil, nil, "InputBoxTemplate")
+-- -----------------------------------------------------
+-- Shared editbox UI for copying fields (email, website) in About panel
+-- -----------------------------------------------------
+local editbox = CreateFrame("EditBox", nil, nil, "InputBoxTemplate") -- WoW API: creates an input box UI element
 editbox:Hide()
 editbox:SetFontObject("GameFontHighlightSmall")
-AboutPanel.editbox = editbox
-
 editbox:SetScript("OnEscapePressed", editbox.Hide)
 editbox:SetScript("OnEnterPressed", editbox.Hide)
 editbox:SetScript("OnEditFocusLost", editbox.Hide)
 editbox:SetScript("OnEditFocusGained", editbox.HighlightText)
 editbox:SetScript("OnTextChanged", function(self)
-	self:SetText(self:GetParent().value)
-	self:HighlightText()
+	self:SetText(self:GetParent().value) -- always reset to original
+	self:HighlightText() -- auto-select text for copy
 end)
+AboutPanel.editbox = editbox
 
-local function OpenEditbox(self, ...)
+local function OpenEditbox(self)
 	editbox:SetParent(self)
 	editbox:SetAllPoints(self)
 	editbox:SetText(self.value)
 	editbox:Show()
 end
 
-local function HideTooltip()
-	GameTooltip:Hide()
-end
-
 local function ShowTooltip(self)
 	GameTooltip:SetOwner(self, "ANCHOR_TOPRIGHT")
 	GameTooltip:SetText(L["Click and press Ctrl-C to copy"])
 end
+local function HideTooltip() GameTooltip:Hide() end
 
---- Create a new About panel
--- @name //addon//:CreateAboutPanel
--- @paramsig AddOn[, parent]
--- @param AddOn name of which you are attaching the panel. String
--- @param parent AddOn name in Interface Options. String or nil
--- If parent is provided, panel will be under [+]
--- otherwise the panel will be a normal AddOn category
--- @return frame To do as you wish
--- @usage local aboutFrame = MyAddOn:CreateAboutPanel("MyAddOn", "MyAddOn")
--- -- OR
--- MyAddOn:CreateAboutPanel("MyAddOn", "MyAddOn")
+-- -----------------------------------------------------
+-- Creates the About panel in Blizzard's Interface Options (Settings UI)
+-- -----------------------------------------------------
 function AboutPanel:CreateAboutPanel(addon, parent)
-	addon = addon:gsub(" ", "") -- Remove spaces from AddOn because GetMetadata doesn't like those
-	local addon = parent or addon
+	addon = addon:gsub(" ", "") -- some APIs don't like spaces in addon name
+	addon = parent or addon
+
 	local frame = AboutPanel.aboutFrame[addon]
+	if frame then return frame end -- reuse cached
 
-	if not frame then
-		frame = CreateFrame("Frame", addon.."AboutPanel", UIParent)
+	frame = CreateFrame("Frame", addon.."AboutPanel", UIParent) -- UIParent makes this a global frame
+	local title_str = frame:CreateFontString(nil, "ARTWORK", "GameFontNormalLarge")
+	title_str:SetPoint("TOPLEFT", 16, -16)
+	title_str:SetText((parent and GetTitle(addon) or addon) .. " - " .. L["About"])
 
-		local title = GetTitle(addon)
-		local title_str = frame:CreateFontString(nil, "ARTWORK", "GameFontNormalLarge")
-		title_str:SetPoint("TOPLEFT", 16, -16)
-		title_str:SetText((parent and title or addon) .. " - " .. L["About"])
-
-		local notes = GetNotes(addon)
-		local notes_str
-		if notes then
-			notes_str = frame:CreateFontString(nil, "ARTWORK", "GameFontHighlightSmall")
-			notes_str:SetHeight(32)
-			notes_str:SetPoint("TOPLEFT", title_str, "BOTTOMLEFT", 0, -8)
-			notes_str:SetPoint("RIGHT", frame, -32, 0)
-			notes_str:SetNonSpaceWrap(true)
-			notes_str:SetJustifyH("LEFT")
-			notes_str:SetJustifyV("TOP")
-			notes_str:SetText(GetNotes(addon))
-		end
-
-		local i, title, detail = 0, {}, {}
-		local function SetAboutInfo(field, text, editbox)
-			i = i + 1
-			title[i] = frame:CreateFontString(nil, "ARTWORK", "GameFontNormalSmall")
-			if i == 1 then
-				title[i]:SetPoint("TOPLEFT", notes and notes_str or title_str, "BOTTOMLEFT", -2, -12)
-			else
-				title[i]:SetPoint("TOPLEFT", title[i-1], "BOTTOMLEFT", 0, -10)
-			end
-			title[i]:SetWidth(80)
-			title[i]:SetJustifyH("RIGHT")
-			title[i]:SetJustifyV("TOP")
-			title[i]:SetText(field)
-
-			detail[i] = frame:CreateFontString(nil, "ARTWORK", "GameFontHighlightSmall")
-			detail[i]:SetPoint("TOPLEFT", title[i], "TOPRIGHT", 4, 0)
-			detail[i]:SetPoint("RIGHT", frame, -16, 0)
-			detail[i]:SetJustifyH("LEFT")
-			detail[i]:SetJustifyV("TOP")
-			detail[i]:SetText(text)
-
-			if editbox then
-				local button = CreateFrame("Button", nil, frame)
-				button:SetAllPoints(detail[i])
-				button.value = text
-				button:SetScript("OnClick", OpenEditbox)
-				button:SetScript("OnEnter", ShowTooltip)
-				button:SetScript("OnLeave", HideTooltip)
-			end
-		end
-
-		local date = GetAddOnDate(addon)
-		if date then SetAboutInfo(L["Date"], date) end
-		local version = GetVersion(addon)
-		if version then SetAboutInfo(L["Version"], version) end
-		local author = GetAuthor(addon)
-		if author then SetAboutInfo(L["Author"], author) end
-		local category = GetCategory(addon)
-		if category then SetAboutInfo(L["Category"], category) end
-		local license = GetLicense(addon)
-		if license then SetAboutInfo(L["License"], license) end
-		local credits = GetCredits(addon)
-		if credits then SetAboutInfo(L["Credits"], credits) end
-		local email = GetEmail(addon)
-		if email then SetAboutInfo(L["Email"], email, true) end
-		local website = GetWebsite(addon)
-		if website then	SetAboutInfo(L["Website"], website, true) end
-		local localizations = GetLocalizations(addon)
-		if localizations then SetAboutInfo(L["Localizations"], localizations) end
-
-		frame.name = not parent and addon or L["About"]
-		frame.parent = parent
-		Settings.RegisterCanvasLayoutCategory(frame)
-		AboutPanel.aboutFrame[addon] = frame
+	-- Add notes paragraph if present
+	local notes = GetNotes(addon)
+	local notes_str
+	if notes then
+		notes_str = frame:CreateFontString(nil, "ARTWORK", "GameFontHighlightSmall")
+		notes_str:SetHeight(32)
+		notes_str:SetPoint("TOPLEFT", title_str, "BOTTOMLEFT", 0, -8)
+		notes_str:SetPoint("RIGHT", frame, -32, 0)
+		notes_str:SetNonSpaceWrap(true)
+		notes_str:SetJustifyH("LEFT")
+		notes_str:SetText(notes)
 	end
 
+	-- Dynamically stack info fields
+	local i = 0
+	local prev_label = nil
+	local function SetAboutInfo(field, text, editable)
+		if not text then return end
+		i = i + 1
+		local label = frame:CreateFontString(nil, "ARTWORK", "GameFontNormalSmall")
+		label:SetPoint("TOPLEFT", (i == 1 and (notes and notes_str or title_str) or prev_label), "BOTTOMLEFT", i == 1 and -2 or 0, -10)
+		label:SetWidth(80)
+		label:SetJustifyH("RIGHT")
+		label:SetText(field)
+		prev_label = label
+
+		local detail = frame:CreateFontString(nil, "ARTWORK", "GameFontHighlightSmall")
+		detail:SetPoint("TOPLEFT", label, "TOPRIGHT", 4, 0)
+		detail:SetPoint("RIGHT", frame, -16, 0)
+		detail:SetJustifyH("LEFT")
+		detail:SetText(text)
+
+		if editable then
+			local button = CreateFrame("Button", nil, frame)
+			button:SetAllPoints(detail)
+			button.value = text
+			button:SetScript("OnClick", OpenEditbox)
+			button:SetScript("OnEnter", ShowTooltip)
+			button:SetScript("OnLeave", HideTooltip)
+		end
+	end
+
+	-- Add fields (conditionally if metadata exists)
+	SetAboutInfo(L["Version"],			GetVersion(addon))
+	SetAboutInfo(L["Author"],			GetAuthor(addon))
+	SetAboutInfo(L["Email"],			GetEmail(addon), true)
+	SetAboutInfo(L["Date"],				GetAddOnDate(addon))
+	SetAboutInfo(L["Category"],			GetCategory(addon))
+	SetAboutInfo(L["License"],			GetLicense(addon))
+	SetAboutInfo(L["Credits"],			GetCredits(addon))
+	SetAboutInfo(L["Website"],			GetWebsite(addon), true)
+	SetAboutInfo(L["Localizations"],	GetLocalizations(addon))
+
+	-- Register with Blizzard's modern Settings system (Dragonflight+)
+	frame.name = not parent and addon or L["About"]
+	frame.parent = parent
+	Settings.RegisterCanvasLayoutCategory(frame)
+
+	AboutPanel.aboutFrame[addon] = frame
 	return frame
 end
 
---- Creates a table of an AddOn's ToC fields
--- see http://www.wowace.com/addons/ace3/pages/api/ace-config-3-0/
--- @name //addon//:AboutOptionsTable
--- @param AddOn name string whose ToC you want parsed
--- @return aboutTable suitable for use with AceConfig-3.0
--- @usage -- assuming options is your top-level table
--- local options = {} -- put your regular stuff here
--- options.args.aboutTable = MyAddOn:AboutOptionsTable("MyAddOn")
--- options.args.aboutTable.order = -1 -- use any number in the hierarchy. -1 means "put it last"
--- LibStub("AceConfig-3.0"):RegisterOptionsTable("MyAddOn", options)
+-- -----------------------------------------------------
+-- Creates an AceConfig-3.0 options table for About info (alternative UI)
+-- -----------------------------------------------------
 function AboutPanel:AboutOptionsTable(addon)
 	assert(LibStub("AceConfig-3.0"), "LibAboutPanel-2.0: API 'AboutOptionsTable' requires AceConfig-3.0", 2)
-	addon = addon:gsub(" ", "") -- Remove spaces from AddOn because GetMetadata doesn't like those
+	addon = addon:gsub(" ", "")
+
 	local Table = AboutPanel.aboutTable[addon]
-	if not Table then
-		Table = {
-			name = L["About"],
-			type = "group",
-			args = {
-				title = {
-					order = 1,
-					name = "|cffe6cc80" .. GetTitle(addon) .. "|r",
-					type = "description",
-					fontSize = "large",
-				},
-			},
+	if Table then return Table end
+
+	Table = {
+		name = L["About"],
+		type = "group",
+		args = {
+			title = {
+				order = 1,
+				name = "|cffe6cc80" .. (GetTitle(addon) or addon) .. "|r",
+				type = "description",
+				fontSize = "large",
+			}
 		}
-		local notes = GetNotes(addon)
-		if notes then
-			Table.args.blank = {
-				order = 2,
-				name = "",
-				type = "description",
-			}
-			Table.args.notes = {
-				order = 3,
-				name = notes,
-				type = "description",
-				fontSize = "medium",
-			}
-		end
-		Table.args.blank2 = {
-			order = 4,
-			name = "\n",
-			type = "description",
-		}
-		local date = GetAddOnDate(addon)
-		if date then
-			Table.args.date = {
-				order = 5,
-				name = "|cffe6cc80" .. L["Date"] .. ": |r" .. date,
-				type = "description",
-			}
-		end
-		local version = GetVersion(addon)
-		if version then
-			Table.args.version = {
-				order = 6,
-				name = "|cffe6cc80" .. L["Version"] .. ": |r" .. version,
-				type = "description",
-			}
-		end
-		local author = GetAuthor(addon)
-		if author then
-			Table.args.author = {
-				order = 7,
-				name = "|cffe6cc80" .. L["Author"] .. ": |r" .. author,
-				type = "description",
-			}
-		end
-		local category = GetCategory(addon)
-		if category then
-			Table.args.category = {
-				order = 8,
-				name = "|cffe6cc80" .. L["Category"] .. ": |r" .. category,
-				type = "description",
-			}
-		end
-		local license = GetLicense(addon)
-		if license then
-			Table.args.license = {
-				order = 9,
-				name = "|cffe6cc80" .. L["License"] .. ": |r" .. license,
-				type = "description",
-			}
-		end
-		local credits = GetCredits(addon)
-		if credits then
-			Table.args.credits = {
-				order = 10,
-				name = "|cffe6cc80" .. L["Credits"] .. ": |r" .. credits,
-				type = "description",
-			}
-		end
-		local email = GetEmail(addon)
-		if email then
-			Table.args.email = {
-				order = 11,
-				name = "|cffe6cc80" .. L["Email"] .. ": |r",
+	}
+
+	-- helper to add fields
+	local function addField(order, label, text, asInput)
+		if not text then return end
+		if asInput then
+			Table.args[label] = {
+				order = order,
+				name = "|cffe6cc80" .. L[label] .. ": |r",
 				desc = L["Click and press Ctrl-C to copy"],
-				type = "input",
+				type = "input", -- AceConfig input box
 				width = "full",
-				get = function() return email end,
+				get = function() return text end,
 			}
-		end
-		local website = GetWebsite(addon)
-		if website then
-			Table.args.website = {
-				order = 12,
-				name = "|cffe6cc80" .. L["Website"] .. ": |r",
-				desc = L["Click and press Ctrl-C to copy"],
-				type = "input",
-				width = "full",
-				get = function() return website end,
-			}
-		end
-		local localizations = GetLocalizations(addon)
-		if localizations then
-			Table.args.localizations = {
-				order = 13,
-				name = "|cffe6cc80" .. L["Localizations"] .. ": |r" .. localizations,
+		else
+			Table.args[label] = {
+				order = order,
+				name = "|cffe6cc80" .. L[label] .. ": |r" .. text,
 				type = "description",
 			}
 		end
-		AboutPanel.aboutTable[addon] = Table
 	end
+
+	-- Add optional fields
+	local notes = GetNotes(addon)
+	if notes then
+		Table.args.blank = { order = 2, name = "", type = "description" }
+		Table.args.notes = { order = 3, name = notes, type = "description", fontSize = "medium" }
+	end
+
+	addField(5,		"Version",			GetVersion(addon))
+	addField(6,		"Author",			GetAuthor(addon))
+	addField(7,		"Email",			GetEmail(addon), true)
+	addField(8,		"Date",				GetAddOnDate(addon))
+	addField(9,		"Category",			GetCategory(addon))
+	addField(10,	"License",			GetLicense(addon))
+	addField(11,	"Credits",			GetCredits(addon))
+	addField(12,	"Website",			GetWebsite(addon), true)
+	addField(13,	"Localizations",	GetLocalizations(addon))
+
+	AboutPanel.aboutTable[addon] = Table
 	return Table
 end
 
--- ---------------------------------------------------------------------
--- Embed handling
-
-local mixins = {
-	"CreateAboutPanel",
-	"AboutOptionsTable"
-}
-
--- AboutPanel AceConsole into the target object making the functions from the mixins list available on target:..
--- So you can call LibStub("LibAboutPanel-2.0"):Embed(myAddOn)
--- @param target AddOn table in which to embed
--- @usage
--- local addonname, AddOn = ...
--- LibStub("LibAboutPanel-2.0"):Embed(AddOn)
--- -- **OR**, if using Ace3
--- -- you do not explicitly call :Embed
--- local MyAddOn = LibStub("AceAddon-3.0"):NewAddon("MyAddOn", "LibAboutPanel-2.0")
+-- -----------------------------------------------------
+-- Embeds AboutPanel API into target addon object for easy usage
+-- -----------------------------------------------------
+local mixins = { "CreateAboutPanel", "AboutOptionsTable" }
 function AboutPanel:Embed(target)
-	for k, v in pairs(mixins) do
-		target[v] = self[v]
+	for _, name in pairs(mixins) do
+		target[name] = self[name]
 	end
 	self.embeds[target] = true
 	return target
 end
 
---- Upgrade our old embeded
-for addon in pairs(AboutPanel.embeds) do
-	AboutPanel:Embed(addon)
+-- Upgrades previously embedded addons if a new version of the library is loaded
+for target, _ in pairs(AboutPanel.embeds) do
+	AboutPanel:Embed(target)
 end

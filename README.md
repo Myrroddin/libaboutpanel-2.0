@@ -1,13 +1,13 @@
 # Table of Contents
 - [Quick Integration](#quick-integration)
 - [Adding LibAboutPanel-2.0 via .pkgmeta](#adding-libaboutpanel-20-via-pkgmeta)
-- [Ace3 Example Usage](#ace3-example-usage)
-- [API Usage](#api-usage)
+- [Ace3 Example Usage](./WIKI.md#ace3-example-usage)
+- [API Usage](./WIKI.md#api-reference)
 - [Supported ToC Fields](#supported-toc-fields)
 - [Features](#features)
 - [Troubleshooting](#troubleshooting)
 - [Contributing](#contributing)
-- [Full Documentation](#full-documentation)
+- [Full Documentation](./WIKI.md)
 
 # LibAboutPanel-2.0
 
