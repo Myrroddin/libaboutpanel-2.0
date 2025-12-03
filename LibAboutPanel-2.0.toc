@@ -19,7 +19,7 @@
 
 ## Author: Paul Vandersypen, Artur91425
 ## X-License: MIT License
-## X-Category: Library
+## X-Category: Libraries
 ## LoadOnDemand: 1
 
 ## OptionalDeps: LibStub, CallbackHandler-1.0, Ace3

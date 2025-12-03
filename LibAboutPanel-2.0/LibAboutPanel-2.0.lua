@@ -42,7 +42,46 @@ end
 local function GetTitle(addon)		return GetMeta(addon, "Title", true) end
 local function GetNotes(addon)		return GetMeta(addon, "Notes", true) end
 local function GetCredits(addon)	return GetAddOnMetadata(addon, "X-Credits") end
-local function GetCategory(addon)	return GetAddOnMetadata(addon, "X-Category") end
+
+-- Retrieves category field from .toc
+local function GetCategory(addon)
+	local category = GetAddOnMetadata(addon, "X-Category") or GetAddOnMetadata(addon, "Category")
+	if not category then return end
+
+	-- there are 25+ standard categories in WoW, map them to localized strings if possible
+	category = category:gsub("[aA]ction [bB]ars", ACTIONBARS_LABEL)
+	category = category:gsub("[aA]uctions", AUCTIONS)
+	category = category:gsub("[bB]uffs (&|and) [dD]ebuffs", BUFFOPTIONS_LABEL)
+	category = category:gsub("[cC]hat", CHAT)
+	category = category:gsub("[cC]ollections", AUCTION_HOUSE_FILTER_CATEGORY_COLLECTIONS)
+	category = category:gsub("[cC]ombat", COMBAT_LABEL)
+	category = category:gsub("[dD]ata [bB]roker", L["Data Broker"])
+	category = category:gsub("[dD]eveloper [tT]ools", L["Developer Tools"])
+	category = category:gsub("[dD]ungeons (&|and) [rR]aids", L["Dungeons & Raids"])
+	category = category:gsub("[eE]quipment", AUCTION_HOUSE_FILTER_CATEGORY_EQUIPMENT)
+	category = category:gsub("[eE]xpansion [fF]eatures", L["Expansion Features"])
+	category = category:gsub("[iI]nventory", INVENTORY_TOOLTIP)
+	category = category:gsub("[lL]ibraries", L["Libraries"])
+	category = category:gsub("[lL]oot", LOOT_NOUN)
+	-- the map and minimap replacements must be in the following order to avoid double-replacing "map" in "minimap"
+	category = category:gsub("[mM]ap%s*(&|and)%s*[mM]inimap", WORLD_MAP .. " " .. QUEST_LOGIC_AND .. " " .. MINIMAP_LABEL)
+	category = category:gsub("[mM]ap", WORLD_MAP)
+	category = category:gsub("[mM]inimap", MINIMAP_LABEL)
+	category = category:gsub("[mM]edia", L["Media"])
+	category = category:gsub("[mM]iscellaneous", MISCELLANEOUS)
+	category = category:gsub("[oO]ther", OTHER)
+	category = category:gsub("[pP]et [bB]attles", SHOW_PET_BATTLES_ON_MAP_TEXT)
+	category = category:gsub("[pP]rofessions", TRADE_SKILLS)
+	category = category:gsub("[pP][vV][pP]", PVP)
+	category = category:gsub("[qQ]uests", QUESTS_LABEL)
+	category = category:gsub("[sS]ocial", L["Roleplay"])
+	category = category:gsub("[uU][iI] [oO]verhaul", L["UI Overhaul"])
+	category = category:gsub("[uU]nit [fF]rames", UNITFRAME_LABEL)
+	category = category:gsub("[uU]ser [iI]nterface", BUG_CATEGORY5)
+	category = category:gsub("[mM]inigames", L["Minigames"])
+
+	return category
+end
 
 -- Parses and normalizes date fields from .toc, handling repo keyword expansion
 local function GetAddOnDate(addon)
@@ -229,11 +268,11 @@ function AboutPanel:CreateAboutPanel(addon, parent)
 	end
 
 	-- Add fields (conditionally if metadata exists)
-	SetAboutInfo(L["Version"],			GetVersion(addon))
+	SetAboutInfo(GAME_VERSION_LABEL,	GetVersion(addon))
 	SetAboutInfo(L["Author"],			GetAuthor(addon))
 	SetAboutInfo(L["Email"],			GetEmail(addon), true)
 	SetAboutInfo(L["Date"],				GetAddOnDate(addon))
-	SetAboutInfo(L["Category"],			GetCategory(addon))
+	SetAboutInfo(CATEGORY,				GetCategory(addon))
 	SetAboutInfo(L["License"],			GetLicense(addon))
 	SetAboutInfo(L["Credits"],			GetCredits(addon))
 	SetAboutInfo(L["Website"],			GetWebsite(addon), true)
@@ -299,11 +338,11 @@ function AboutPanel:AboutOptionsTable(addon)
 		Table.args.notes = { order = 3, name = notes, type = "description", fontSize = "medium" }
 	end
 
-	addField(5,		"Version",			GetVersion(addon))
+	addField(5,		GAME_VERSION_LABEL,	GetVersion(addon))
 	addField(6,		"Author",			GetAuthor(addon))
 	addField(7,		"Email",			GetEmail(addon), true)
 	addField(8,		"Date",				GetAddOnDate(addon))
-	addField(9,		"Category",			GetCategory(addon))
+	addField(9,		CATEGORY,			GetCategory(addon))
 	addField(10,	"License",			GetLicense(addon))
 	addField(11,	"Credits",			GetCredits(addon))
 	addField(12,	"Website",			GetWebsite(addon), true)

@@ -38,8 +38,10 @@ LibAboutPanel-2.0 is a World of Warcraft Lua library for displaying addon metada
 - Author, Title, Notes (all languages)
 - Version, X-Date, X-ReleaseDate, X-Revision
 - X-Author-Guild, X-Author-Faction, X-Author-Server
-- X-Website, X-Email, X-Localizations, X-Credits, X-Category
+- X-Website, X-Email, X-Localizations, X-Credits, X-Category or Category
 - X-License, X-Copyright
+
+**Note:** `Category` and `X-Category` entries are now localized with 26 translations.
 
 ## Features
 
@@ -57,7 +59,7 @@ LibAboutPanel-2.0 is a World of Warcraft Lua library for displaying addon metada
 
 ## Contributing
 
-- Help translate or verify localization at CurseForge
+- Help translate or verify localization [at CurseForge](https://legacy.curseforge.com/wow/addons/libaboutpanel-2-0/localization)
 - Report bugs or request improvements via the [GitHub issue tracker](https://github.com/Myrroddin/libaboutpanel-2.0/issues)
 
 ## Adding LibAboutPanel-2.0 via .pkgmeta

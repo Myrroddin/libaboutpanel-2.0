@@ -81,8 +81,10 @@ LibStub("LibAboutPanel-2.0"):AboutOptionsTable(addonName)
 - Author, Title, Notes (all languages)
 - Version, X-Date, X-ReleaseDate, X-Revision
 - X-Author-Guild, X-Author-Faction, X-Author-Server
-- X-Website, X-Email, X-Localizations, X-Credits, X-Category
+- X-Website, X-Email, X-Localizations, X-Credits, X-Category or Category
 - X-License, X-Copyright
+
+**Note:** `Category` and `X-Category` entries are now localized with 26 translations.
 
 ## Features
 
