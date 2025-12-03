@@ -1,4 +1,5 @@
 # Table of Contents
+
 - [Quick Integration](#quick-integration)
 - [Adding LibAboutPanel-2.0 via .pkgmeta](#adding-libaboutpanel-20-via-pkgmeta)
 - [Ace3 Example Usage](./WIKI.md#ace3-example-usage)
@@ -16,20 +17,24 @@ LibAboutPanel-2.0 is a World of Warcraft Lua library for displaying addon metada
 ## Quick Integration
 
 1. **Dependencies:**
-   - Requires: LibStub, CallbackHandler-1.0, AceConfig-3.0
-   - Add these to your `.toc` and `.pkgmeta` files.
+
+	- Requires: LibStub, CallbackHandler-1.0, AceConfig-3.0
+	- Add these to your `.toc` and `.pkgmeta` files.
 
 2. **Embedding:**
-   - With Ace3: `local MyAddon = LibStub("AceAddon-3.0"):NewAddon("MyAddon", "LibAboutPanel-2.0")`
-   - Without Ace3: `LibStub("LibAboutPanel-2.0"):Embed(MyAddon)`
-   - Or use as a standalone library: `local LAP = LibStub("LibAboutPanel-2.0")`
+
+	- With Ace3: `local MyAddon = LibStub("AceAddon-3.0"):NewAddon("MyAddon", "LibAboutPanel-2.0")`
+	- Without Ace3: `LibStub("LibAboutPanel-2.0"):Embed(MyAddon)`
+	- Or use as a standalone library: `local LAP = LibStub("LibAboutPanel-2.0")`
 
 3. **API Usage:**
-   - `:CreateAboutPanel(addon, parent)` — Adds an About panel to Blizzard's settings.
-   - `:AboutOptionsTable(addon)` — Returns an AceConfig-3.0 options table for About info.
-   - Both APIs auto-detect and display metadata from your `.toc` file, including localized fields.
+
+	- `:CreateAboutPanel(addon, parent)` — Adds an About panel to Blizzard's settings.
+	- `:AboutOptionsTable(addon)` — Returns an AceConfig-3.0 options table for About info.
+	- Both APIs auto-detect and display metadata from your `.toc` file, including localized fields.
 
 ## Supported ToC Fields
+
 - Author, Title, Notes (all languages)
 - Version, X-Date, X-ReleaseDate, X-Revision
 - X-Author-Guild, X-Author-Faction, X-Author-Server
@@ -37,18 +42,21 @@ LibAboutPanel-2.0 is a World of Warcraft Lua library for displaying addon metada
 - X-License, X-Copyright
 
 ## Features
+
 - Automatic localization for faction, locale, and common strings
 - Embedded API for easy integration
 - AceConfig-3.0 support for flexible UI placement
 - Shared editbox for copying fields (email, website)
 
 ## Troubleshooting
+
 - Ensure all dependencies are listed in your `.toc` and loaded before LibAboutPanel-2.0
 - For bug reports, provide:
-  - Addon name, LAP version, WoW version/build, language
-  - Steps to reproduce, error logs (BugSack, Swatter, etc), screenshots
+	- Addon name, LAP version, WoW version/build, language
+	- Steps to reproduce, error logs (BugSack, Swatter, etc), screenshots
 
 ## Contributing
+
 - Help translate or verify localization at CurseForge
 - Report bugs or request improvements via the [GitHub issue tracker](https://github.com/Myrroddin/libaboutpanel-2.0/issues)
 

@@ -7,6 +7,8 @@ local MAJOR, MINOR = "LibAboutPanel-2.0", 114 -- Library name and version; bump 
 assert(LibStub, MAJOR .. " requires LibStub") -- LibStub is a lightweight lib loader
 local AboutPanel, oldMinor = LibStub:NewLibrary(MAJOR, MINOR)
 if not AboutPanel then return end -- skip if an equal/newer version is already loaded
+local _, localizations = ... -- get the vaarg table
+local L = localizations.L -- reference to localization table
 
 -- Persistent tables: preserve state across UI reloads and allow caching for performance
 AboutPanel.embeds		= AboutPanel.embeds or {} -- Tracks addons this library has been embedded into
@@ -14,49 +16,15 @@ AboutPanel.aboutTable	= AboutPanel.aboutTable or {} -- Caches AceConfig options 
 AboutPanel.aboutFrame	= AboutPanel.aboutFrame or {} -- Caches Blizzard Settings frames per addon
 
 -- Localize frequently used Lua and WoW API functions for performance
-local setmetatable, tostring, rawset, pairs, strmatch = setmetatable, tostring, rawset, pairs, strmatch
-local GetLocale, CreateFrame = GetLocale, CreateFrame
+local pairs, strmatch, GetLocale, CreateFrame = pairs, strmatch, GetLocale, CreateFrame
 local GetAddOnMetadata = C_AddOns.GetAddOnMetadata -- retrieves .toc metadata like Title, Notes, Author, etc.
 local format, gsub, upper, lower = string.format, string.gsub, string.upper, string.lower
-
--- Localization shim: returns the key itself if no translation exists.
--- This allows the library to function even if translations are missing.
-local L = setmetatable({}, {
-	__index = function(tab, key)
-		local value = tostring(key)
-		rawset(tab, key, value)
-		return value
-	end
-})
-
--- Load localization tables for supported languages if available
-local locale = GetLocale()
-if locale == "deDE" then
-	--@localization(locale="deDE", format="lua_additive_table")@
-elseif locale == "esES" or locale == "esMX" then
-	--@localization(locale="esES", format="lua_additive_table")@
-elseif locale == "esMX" then
-	--@localization(locale="esMX", format="lua_additive_table")@
-elseif locale == "frFR" then
-	--@localization(locale="frFR", format="lua_additive_table")@
-elseif locale == "itIT" then
-	--@localization(locale="itIT", format="lua_additive_table")@
-elseif locale == "koKR" then
-	--@localization(locale="koKR", format="lua_additive_table")@
-elseif locale == "ptBR" then
-	--@localization(locale="ptBR", format="lua_additive_table")@
-elseif locale == "ruRU" then
-	--@localization(locale="ruRU", format="lua_additive_table")@
-elseif locale == "zhCN" then
-	--@localization(locale="zhCN", format="lua_additive_table")@
-elseif locale == "zhTW" then
-	--@localization(locale="zhTW", format="lua_additive_table")@
-end
 
 -- -----------------------------------------------------
 -- Helper functions to standardize metadata lookups and parsing from .toc files
 -- -----------------------------------------------------
 
+local locale = GetLocale() -- current game client locale
 -- Converts a string to title case (e.g., "john DOE" -> "John Doe")
 local function TitleCase(str)
 	return str and gsub(str, "(%a)(%a+)", function(a, b) return upper(a) .. lower(b) end)
