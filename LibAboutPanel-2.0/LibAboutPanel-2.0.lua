@@ -113,14 +113,26 @@ local function GetLicense(addon)
 	local license = GetAddOnMetadata(addon, "X-License") or GetAddOnMetadata(addon, "X-Copyright")
 	if not license then return end
 
-	if not (strmatch(license, "^MIT") or strmatch(license, "^GNU")) then
+	-- Preserve known license identifiers
+	if not (strmatch(license, "^MIT%f[%A]") or strmatch(license, "^GNU%f[%A]")) then
 		license = TitleCase(license)
 	end
-	license = gsub(license, "Copyright", L["Copyright"] .. " ©")
+
+	-- Normalize copyright keyword
+	license = gsub(license, "[cC]opyright", L["Copyright"] .. " ©")
+
+	-- Normalize (c) markers
 	license = gsub(license, "%([cC]%)", "©")
-	license = gsub(license, "© ©", "©")
-	license = gsub(license, "  ", " ")
-	license = gsub(license, "[aA]ll [rR]ights [rR]eserved", L["All Rights Reserved"])
+
+	-- Remove duplicate symbols
+	license = gsub(license, "©%s*©", "©")
+
+	-- Normalize spacing
+	license = gsub(license, "%s+", " ")
+
+	-- Normalize "All Rights Reserved"
+	license = gsub(license, "[aA]ll%s+[rR]ights%s+[rR]eserved", L["All Rights Reserved"])
+
 	return license
 end
 
