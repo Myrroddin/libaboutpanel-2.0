@@ -1,9 +1,9 @@
 --[[
-LibAboutPanel-2.0: WoW Lua library for displaying addon metadata in Blizzard's Interface Options and AceConfig-3.0 tables.
-Supports Classic Era, Classic, and Retail. This file contains the core implementation and helper functions.
+LibAboutPanel-2.0: WoW Lua library for displaying addon metadata in Blizzard's Options and AceConfig-3.0 tables.
+This file contains the core implementation and helper functions.
 --]]
 
-local MAJOR, MINOR = "LibAboutPanel-2.0", 114 -- Library name and version; bump MINOR for each revision
+local MAJOR, MINOR = "LibAboutPanel-2.0", 115 -- Library name and version; bump MINOR for each revision
 assert(LibStub, MAJOR .. " requires LibStub") -- LibStub is a lightweight lib loader
 local AboutPanel, oldMinor = LibStub:NewLibrary(MAJOR, MINOR)
 if not AboutPanel then return end -- skip if an equal/newer version is already loaded
@@ -45,40 +45,13 @@ local function GetCredits(addon)	return GetAddOnMetadata(addon, "X-Credits") end
 
 -- Retrieves category field from .toc
 local function GetCategory(addon)
-	local category = GetAddOnMetadata(addon, "X-Category") or GetAddOnMetadata(addon, "Category")
-	if not category then return end
+	-- Prefer Blizzard's official Category field with localization support
+	local category = GetMeta(addon, "Category", true)
 
-	-- there are 25+ standard categories in WoW, map them to localized strings if possible
-	category = category:gsub("[aA]ction [bB]ars", ACTIONBARS_LABEL)
-	category = category:gsub("[aA]uctions", AUCTIONS)
-	category = category:gsub("[bB]uffs (&|and) [dD]ebuffs", BUFFOPTIONS_LABEL)
-	category = category:gsub("[cC]hat", CHAT)
-	category = category:gsub("[cC]ollections", AUCTION_HOUSE_FILTER_CATEGORY_COLLECTIONS)
-	category = category:gsub("[cC]ombat", COMBAT_LABEL)
-	category = category:gsub("[dD]ata [bB]roker", L["Data Broker"])
-	category = category:gsub("[dD]eveloper [tT]ools", L["Developer Tools"])
-	category = category:gsub("[dD]ungeons (&|and) [rR]aids", L["Dungeons & Raids"])
-	category = category:gsub("[eE]quipment", AUCTION_HOUSE_FILTER_CATEGORY_EQUIPMENT)
-	category = category:gsub("[eE]xpansion [fF]eatures", L["Expansion Features"])
-	category = category:gsub("[iI]nventory", INVENTORY_TOOLTIP)
-	category = category:gsub("[lL]ibraries", L["Libraries"])
-	category = category:gsub("[lL]oot", LOOT_NOUN)
-	-- the map and minimap replacements must be in the following order to avoid double-replacing "map" in "minimap"
-	category = category:gsub("[mM]ap%s*(&|and)%s*[mM]inimap", WORLD_MAP .. " " .. QUEST_LOGIC_AND .. " " .. MINIMAP_LABEL)
-	category = category:gsub("[mM]ap", WORLD_MAP)
-	category = category:gsub("[mM]inimap", MINIMAP_LABEL)
-	category = category:gsub("[mM]edia", L["Media"])
-	category = category:gsub("[mM]iscellaneous", MISCELLANEOUS)
-	category = category:gsub("[oO]ther", OTHER)
-	category = category:gsub("[pP]et [bB]attles", SHOW_PET_BATTLES_ON_MAP_TEXT)
-	category = category:gsub("[pP]rofessions", TRADE_SKILLS)
-	category = category:gsub("[pP][vV][pP]", PVP)
-	category = category:gsub("[qQ]uests", QUESTS_LABEL)
-	category = category:gsub("[sS]ocial", L["Roleplay"])
-	category = category:gsub("[uU][iI] [oO]verhaul", L["UI Overhaul"])
-	category = category:gsub("[uU]nit [fF]rames", UNITFRAME_LABEL)
-	category = category:gsub("[uU]ser [iI]nterface", BUG_CATEGORY5)
-	category = category:gsub("[mM]inigames", L["Minigames"])
+	-- Backward compatibility with legacy X-Category
+	if not category then
+		category = GetMeta(addon, "X-Category", true)
+	end
 
 	return category
 end

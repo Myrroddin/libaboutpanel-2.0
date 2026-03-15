@@ -41,7 +41,7 @@ LibAboutPanel-2.0 is a World of Warcraft Lua library for displaying addon metada
 - X-Website, X-Email, X-Localizations, X-Credits, X-Category or Category
 - X-License, X-Copyright
 
-**Note:** `Category` and `X-Category` entries are now localized with 26 translations.
+**Note:** `Category` and `X-Category` entries are now localized with 26 translations based on the known [AddOn Categories](https://warcraft.wiki.gg/wiki/Addon_Categories). This is really useful if your AddOn has comma-separated multiple categories.
 
 ## Features
 
