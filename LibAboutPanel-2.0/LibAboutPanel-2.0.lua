@@ -30,6 +30,28 @@ local function TitleCase(str)
 	return str and gsub(str, "(%a)(%a+)", function(a, b) return upper(a) .. lower(b) end)
 end
 
+-- Removes leading and trailing whitespace
+local function Trim(text)
+	if not text then return end
+	return text:gsub("^%s+", ""):gsub("%s+$", "")
+end
+
+-- Normalizes whitespace and removes hidden newline characters
+local function NormalizeWhitespace(text)
+	if not text then return end
+
+	-- Remove CR/LF from .toc metadata
+	text = text:gsub("[\r\n]", "")
+
+	-- Trim edges
+	text = Trim(text)
+
+	-- Collapse internal whitespace
+	text = text:gsub("%s+", " ")
+
+	return text
+end
+
 -- Fetches metadata from the addon .toc, using localized fields if available
 local function GetMeta(addon, field, localized)
 	if localized and locale ~= "enUS" then
@@ -39,21 +61,30 @@ local function GetMeta(addon, field, localized)
 	return GetAddOnMetadata(addon, field)
 end
 
-local function GetTitle(addon)		return GetMeta(addon, "Title", true) end
-local function GetNotes(addon)		return GetMeta(addon, "Notes", true) end
-local function GetCredits(addon)	return GetAddOnMetadata(addon, "X-Credits") end
+local function GetTitle(addon)
+	local title = GetMeta(addon, "Title", true)
+	return NormalizeWhitespace(title)
+end
+
+local function GetNotes(addon)
+	local notes = GetMeta(addon, "Notes", true)
+	return NormalizeWhitespace(notes)
+end
+
+local function GetCredits(addon)
+	local credits = GetAddOnMetadata(addon, "X-Credits")
+	return NormalizeWhitespace(credits)
+end
 
 -- Retrieves category field from .toc
 local function GetCategory(addon)
-	-- Prefer Blizzard's official Category field with localization support
 	local category = GetMeta(addon, "Category", true)
 
-	-- Backward compatibility with legacy X-Category
 	if not category then
 		category = GetMeta(addon, "X-Category", true)
 	end
 
-	return category
+	return NormalizeWhitespace(category)
 end
 
 -- Parses and normalizes date fields from .toc, handling repo keyword expansion
@@ -63,7 +94,8 @@ local function GetAddOnDate(addon)
 
 	date = date:gsub("%$Date: (.-) %$", "%1")
 	date = date:gsub("%$LastChangedDate: (.-) %$", "%1")
-	return date
+
+	return NormalizeWhitespace(date)
 end
 
 -- Formats author field, appending guild/server/faction info if present
@@ -88,7 +120,8 @@ local function GetAuthor(addon)
 		faction = gsub(faction, "Horde", FACTION_HORDE)
 		author = author .. " (" .. faction .. ")"
 	end
-	return author
+
+	return NormalizeWhitespace(author)
 end
 
 -- Parses version field, handling repo keywords and developer build tags
@@ -105,7 +138,8 @@ local function GetVersion(addon)
 
 	local revision = GetAddOnMetadata(addon, "X-Project-Revision")
 	if revision then version = version .. " -rev." .. revision end
-	return version
+
+	return NormalizeWhitespace(version)
 end
 
 -- Normalizes and translates license/copyright fields
@@ -133,7 +167,7 @@ local function GetLicense(addon)
 	-- Normalize "All Rights Reserved"
 	license = gsub(license, "[aA]ll%s+[rR]ights%s+[rR]eserved", L["All Rights Reserved"])
 
-	return license
+	return NormalizeWhitespace(license)
 end
 
 -- Maps locale abbreviations to Blizzard's global language constants
@@ -152,18 +186,24 @@ local function GetLocalizations(addon)
 			translations = translations:gsub(k, v)
 		end
 	end
-	return translations
+	return NormalizeWhitespace(translations)
 end
 
 -- Retrieves website and email fields, formatting for display/copy
 local function GetWebsite(addon)
 	local site = GetAddOnMetadata(addon, "X-Website")
-	return site and "|cff77ccff" .. gsub(site, "https?://", "")
+	if not site then return end
+
+	site = NormalizeWhitespace(site)
+	return "|cff77ccff" .. gsub(site, "https?://", "")
 end
 
 local function GetEmail(addon)
 	local email = GetAddOnMetadata(addon, "X-Email") or GetAddOnMetadata(addon, "Email") or GetAddOnMetadata(addon, "eMail")
-	return email and "|cff77ccff" .. email
+	if not email then return end
+
+	email = NormalizeWhitespace(email)
+	return "|cff77ccff" .. email
 end
 
 -- -----------------------------------------------------
