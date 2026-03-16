@@ -10,18 +10,3 @@ local L = setmetatable({}, { __index = function(t, k)
 end })
 
 namespace.L = L
-
-L["About"] = true
-L["All Rights Reserved"] = true
-L["Author"] = true
-L["Click and press Ctrl-C to copy"] = true
-L["Copyright"] = true
-L["Credits"] = true
-L["Date"] = true
-L["Developer Build"] = true
-L["Email"] = true
-L["License"] = true
-L["Localizations"] = true
-L["on the %s realm"] = true
-L["Repository"] = true
-L["Website"] = true

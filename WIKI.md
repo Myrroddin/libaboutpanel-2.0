@@ -81,10 +81,29 @@ LibStub("LibAboutPanel-2.0"):AboutOptionsTable(addonName)
 - Author, Title, Notes (all languages)
 - Version, X-Date, X-ReleaseDate, X-Revision
 - X-Author-Guild, X-Author-Faction, X-Author-Server
-- X-Website, X-Email, X-Localizations, X-Credits, X-Category or Category
+- X-Website, X-Email, X-Localizations, X-Credits, Category or X-Category
 - X-License, X-Copyright
 
-**Note:** `Category` and `X-Category` entries are now localized with 26 translations.
+### `Category` vs `X-Category`
+
+AddOn authors should use `## Category:` based on Blizzard's official
+[AddOn Categories](https://warcraft.wiki.gg/wiki/Addon_Categories).
+
+`## X-Category:` and `## X-Category-<locale>` are still supported for
+backward compatibility but are considered legacy metadata.
+
+You may specify a single category from the Blizzard list, or multiple
+categories separated by commas.
+
+Localized categories must be explicitly declared in the `.toc`
+(e.g. `## Category-deDE:`). If no localized field exists,
+the base `## Category:` value will be used.
+
+```toc
+## Category: Action Bars, Auctions
+## Category-deDE: Aktionsleisten, Auktionen
+## Category-esES: Barras de acción, Subastas
+```
 
 ## Features
 
