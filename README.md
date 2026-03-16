@@ -5,6 +5,7 @@
 - [Ace3 Example Usage](./WIKI.md#ace3-example-usage)
 - [API Usage](./WIKI.md#api-reference)
 - [Supported ToC Fields](#supported-toc-fields)
+	- [Category vs X-Category](#category-vs-x-category)
 - [Features](#features)
 - [Troubleshooting](#troubleshooting)
 - [Contributing](#contributing)
