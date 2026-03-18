@@ -3,7 +3,7 @@ LibAboutPanel-2.0: WoW Lua library for displaying addon metadata in Blizzard's O
 This file contains the core implementation and helper functions.
 --]]
 
-local MAJOR, MINOR = "LibAboutPanel-2.0", 115 -- Library name and version; bump MINOR for each revision
+local MAJOR, MINOR = "LibAboutPanel-2.0", 116 -- Library name and version; bump MINOR for each revision
 assert(LibStub, MAJOR .. " requires LibStub") -- LibStub is a lightweight lib loader
 local AboutPanel, oldMinor = LibStub:NewLibrary(MAJOR, MINOR)
 if not AboutPanel then return end -- skip if an equal/newer version is already loaded
