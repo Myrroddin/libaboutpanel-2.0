@@ -47,7 +47,7 @@ local function NormalizeWhitespace(text)
 	text = Trim(text)
 
 	-- Collapse internal whitespace
-	text = text:gsub("%s+", " ")
+	text = text and text:gsub("%s+", " ")
 
 	return text
 end
@@ -194,16 +194,20 @@ local function GetWebsite(addon)
 	local site = GetAddOnMetadata(addon, "X-Website")
 	if not site then return end
 
-	site = NormalizeWhitespace(site)
-	return "|cff77ccff" .. gsub(site, "https?://", "")
+	local normalizedSite = NormalizeWhitespace(site)
+	if not normalizedSite then return end
+
+	return "|cff77ccff" .. gsub(normalizedSite, "https?://", "")
 end
 
 local function GetEmail(addon)
 	local email = GetAddOnMetadata(addon, "X-Email") or GetAddOnMetadata(addon, "Email") or GetAddOnMetadata(addon, "eMail")
 	if not email then return end
 
-	email = NormalizeWhitespace(email)
-	return "|cff77ccff" .. email
+	local normalizedEmail = NormalizeWhitespace(email)
+	if not normalizedEmail then return end
+
+	return "|cff77ccff" .. normalizedEmail
 end
 
 -- -----------------------------------------------------

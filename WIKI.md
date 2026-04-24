@@ -1,18 +1,19 @@
-# Table of Contents
+# LibAboutPanel-2.0 Wiki
+
+## Table of Contents
 
 - [Quick Start](#quick-start)
 - [Adding LibAboutPanel-2.0 via .pkgmeta](#adding-libaboutpanel-20-via-pkgmeta)
 - [Ace3 Example Usage](#ace3-example-usage)
 - [API Reference](#api-reference)
 - [Supported ToC Fields](#supported-toc-fields)
-	- [Category vs X-Category](#category-vs-x-category)
+  - [Category vs X-Category](#category-vs-x-category)
 - [Features](#features)
 - [Troubleshooting](#troubleshooting)
 - [Contributing](#contributing)
 
-# LibAboutPanel-2.0 Wiki
-
 ## Quick Start
+
 See the [README.md](./README.md) for integration steps, dependencies, and a brief overview.
 
 ## Ace3 Example Usage
@@ -21,36 +22,34 @@ Below is a quick example of integrating LibAboutPanel-2.0 with Ace3 in your addo
 
 ```lua
 function MyAddOn:OnInitialize()
-	local options = {
-		name = "MyAddOn",
-		type = "group",
-		args = {
-			enableAddOn = {
-				order = 10,
-				name = ENABLE, -- use Blizzard's global string
-				type = "toggle",
-				get = function() return self.db.profile.enableAddOn end,
-				set = function(info, value)
-					self.db.profile.enableAddOn = value
-					if value then
-						self:OnEnable()
-					else
-						self:OnDisable()
-					end
-				end
-			}
-		}
-	}
-	-- support for LibAboutPanel-2.0
-	options.args.aboutTab = self:AboutOptionsTable("MyAddOn")
-	options.args.aboutTab.order = -1 -- -1 means "put it last"
+    local options = {
+        name = "MyAddOn",
+        type = "group",
+        args = {
+            enableAddOn = {
+                order = 10,
+                name = ENABLE, -- use Blizzard's global string
+                type = "toggle",
+                get = function() return self.db.profile.enableAddOn end,
+                set = function(info, value)
+                    self.db.profile.enableAddOn = value
+                    if value then
+                        self:Enable() -- AceAddon-3.0 function, see Ace3 docs
+                    else
+                        self:Disable()
+                    end
+                end
+            }
+        }
+    }
+    -- support for LibAboutPanel-2.0
+    options.args.aboutTab = self:AboutOptionsTable("MyAddOn")
+    options.args.aboutTab.order = -1 -- -1 means "put it last" although you can use any order number you wish
 
-	-- Register your options with AceConfigRegistry
-	LibStub("AceConfig-3.0"):RegisterOptionsTable("MyAddOn", options)
+    -- Register your options with AceConfigRegistry
+    LibStub("AceConfig-3.0"):RegisterOptionsTable("MyAddOn", options)
 end
 ```
-
-See the [README.md](./README.md) for integration steps, dependencies, and a brief overview.
 
 ## API Reference
 
@@ -117,8 +116,8 @@ the base `## Category:` value will be used.
 
 - Ensure all dependencies are listed in your `.toc` and loaded before LibAboutPanel-2.0
 - For bug reports, provide:
-	- Addon name, LAP version, WoW version/build, language
-	- Steps to reproduce, error logs (BugSack, Swatter, etc), screenshots
+  - Addon name, LAP version, WoW version/build, language
+  - Steps to reproduce, error logs (BugSack, Swatter, etc), screenshots
 
 ## Contributing
 
@@ -141,6 +140,3 @@ externals:
 
 - The `url` points to the GitHub repository for the library.
 - The `curse-slug` ensures proper packaging and updates via CurseForge.
-
----
-For a quick overview and integration steps, see [README.md](./README.md).

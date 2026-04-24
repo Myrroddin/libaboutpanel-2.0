@@ -1,4 +1,4 @@
-## Interface: 120001, 50503, 38000, 20505, 11508
+## Interface: 120005, 50503, 38000, 20505, 11508
 ## Title: Lib: AboutPanel-2.0
 ## Notes: Adds an AddOn's ToC fields to its options table
 ## Notes-deDE: @localization(locale="deDE", key="Notes", namespace="ToC")@
@@ -30,7 +30,6 @@
 ## Category-ruRU: Библиотеки
 ## Category-zhCN: 函数库
 ## Category-zhTW: 函式庫
-## LoadOnDemand: 1
 
 ## OptionalDeps: LibStub, CallbackHandler-1.0, Ace3
 ## IconTexture: Interface\Icons\inv_misc_book_05
