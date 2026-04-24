@@ -22,13 +22,13 @@ LibAboutPanel-2.0 is a World of Warcraft Lua library for displaying addon metada
 - Requires: LibStub, CallbackHandler-1.0, AceConfig-3.0
 - Add these to your `.toc` and `.pkgmeta` files.
 
-1. **Embedding:**
+2. **Embedding:**
 
 - With Ace3: `local MyAddon = LibStub("AceAddon-3.0"):NewAddon("MyAddon", "LibAboutPanel-2.0")`
 - Without Ace3: `LibStub("LibAboutPanel-2.0"):Embed(MyAddon)`
 - Or use as a standalone library: `local LAP = LibStub("LibAboutPanel-2.0")`
 
-1. **API Usage:**
+3. **API Usage:**
 
 - `:CreateAboutPanel(addon, parent)` — Adds an About panel to Blizzard's settings.
 - `:AboutOptionsTable(addon)` — Returns an AceConfig-3.0 options table for About info.
