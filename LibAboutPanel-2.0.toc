@@ -1,4 +1,4 @@
-## Interface: 120005, 50503, 38000, 20505, 11508
+## Interface: 120005, 50503, 38001, 20505, 11508
 ## Title: Lib: AboutPanel-2.0
 ## Notes: Adds an AddOn's ToC fields to its options table
 ## Notes-deDE: @localization(locale="deDE", key="Notes", namespace="ToC")@
