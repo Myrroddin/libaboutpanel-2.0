@@ -1,102 +1,54 @@
 # LibAboutPanel-2.0
 
-LibAboutPanel-2.0 is a World of Warcraft Lua library for displaying addon metadata in the Interface Options panel or AceConfig-3.0 options tables. It works with Classic Era, Classic, and Retail.
+LibAboutPanel-2.0 is a World of Warcraft Lua library for displaying addon metadata in Blizzard's Settings UI or as an AceConfig-3.0-compatible options table. It works with Classic Era, Classic, and Retail.
 
-## Table of Contents
+## Requirements
 
-- [Quick Integration](#quick-integration)
-- [Adding LibAboutPanel-2.0 via .pkgmeta](#adding-libaboutpanel-20-via-pkgmeta)
-- [Ace3 Example Usage](./WIKI.md#ace3-example-usage)
-- [API Usage](./WIKI.md#api-reference)
-- [Supported ToC Fields](#supported-toc-fields)
-  - [Category vs X-Category](#category-vs-x-category)
-- [Features](#features)
-- [Troubleshooting](#troubleshooting)
-- [Contributing](#contributing)
-- [Full Documentation](./WIKI.md)
+- Required: LibStub
+- Optional: AceConfig-3.0, if using `:AboutOptionsTable()`
 
-## Quick Integration
+## Quick Usage
 
-1. **Dependencies:**
+Embed the library into your addon:
 
-- Requires: LibStub, CallbackHandler-1.0, AceConfig-3.0
-- Add these to your `.toc` and `.pkgmeta` files.
-
-2. **Embedding:**
-
-- With Ace3: `local MyAddon = LibStub("AceAddon-3.0"):NewAddon("MyAddon", "LibAboutPanel-2.0")`
-- Without Ace3: `LibStub("LibAboutPanel-2.0"):Embed(MyAddon)`
-- Or use as a standalone library: `local LAP = LibStub("LibAboutPanel-2.0")`
-
-3. **API Usage:**
-
-- `:CreateAboutPanel(addon, parent)` — Adds an About panel to Blizzard's settings.
-- `:AboutOptionsTable(addon)` — Returns an AceConfig-3.0 options table for About info.
-- Both APIs auto-detect and display metadata from your `.toc` file, including localized fields.
-
-## Supported ToC Fields
-
-- Author, Title, Notes (all languages)
-- Version, X-Date, X-ReleaseDate, X-Revision
-- X-Author-Guild, X-Author-Faction, X-Author-Server
-- X-Website, X-Email, X-Localizations, X-Credits, Category or X-Category
-- X-License, X-Copyright
-
-### `Category` vs `X-Category`
-
-AddOn authors should use `## Category:` based on Blizzard's official
-[AddOn Categories](https://warcraft.wiki.gg/wiki/Addon_Categories).
-
-`## X-Category:` and `## X-Category-<locale>` are still supported for
-backward compatibility but are considered legacy metadata.
-
-You may specify a single category from the Blizzard list, or multiple
-categories separated by commas.
-
-Localized categories must be explicitly declared in the `.toc`
-(e.g. `## Category-deDE:`). If no localized field exists,
-the base `## Category:` value will be used.
-
-```toc
-## Category: Action Bars, Auctions
-## Category-deDE: Aktionsleisten, Auktionen
-## Category-esES: Barras de acción, Subastas
+```lua
+LibStub("LibAboutPanel-2.0"):Embed(MyAddon)
 ```
 
-## Features
+Or use it directly:
 
-- Automatic localization for faction, locale, and common strings
-- Embedded API for easy integration
-- AceConfig-3.0 support for flexible UI placement
-- Shared editbox for copying fields (email, website)
+```lua
+local LAP = LibStub("LibAboutPanel-2.0")
+```
 
-## Troubleshooting
+Create a Blizzard Settings About panel:
 
-- Ensure all dependencies are listed in your `.toc` and loaded before LibAboutPanel-2.0
-- For bug reports, provide:
-  - Addon name, LAP version, WoW version/build, language
-  - Steps to reproduce, error logs (BugSack, Swatter, etc), screenshots
+```lua
+MyAddon:CreateAboutPanel("MyAddon")
+-- or
+LAP:CreateAboutPanel("MyAddon")
+```
+
+Create an AceConfig-3.0-compatible About options table:
+
+```lua
+options.args.about = MyAddon:AboutOptionsTable("MyAddon")
+```
+
+`AboutOptionsTable()` only returns the table. Your addon is responsible for registering it with AceConfig-3.0 or embedding it in an existing options table.
+
+## Documentation
+
+See [WIKI.md](./WIKI.md) for:
+
+- `.pkgmeta` integration
+- Ace3 example usage
+- API reference
+- Supported `.toc` fields
+- Category and localization notes
+- Troubleshooting
 
 ## Contributing
 
 - Help translate or verify localization [at CurseForge](https://legacy.curseforge.com/wow/addons/libaboutpanel-2-0/localization)
 - Report bugs or request improvements via the [GitHub issue tracker](https://github.com/Myrroddin/libaboutpanel-2.0/issues)
-
-## Adding LibAboutPanel-2.0 via .pkgmeta
-
-To include LibAboutPanel-2.0 in your addon using CurseForge packaging, add the following to your `.pkgmeta` file:
-
-```yaml
-externals:
-  Libs/LibStub: https://repos.curseforge.com/wow/libstub/trunk
-  Libs/CallbackHandler-1.0: https://repos.curseforge.com/wow/callbackhandler/trunk/CallbackHandler-1.0
-  Libs/AceConfig-3.0: https://repos.curseforge.com/wow/ace3/trunk/AceConfig-3.0
-  Libs/LibAboutPanel-2.0:
-    url: https://github.com/Myrroddin/libaboutpanel-2.0/LibAboutPanel-2.0
-    curse-slug: libaboutpanel-2-0
-```
-
-- The `url` points to the GitHub repository for the library.
-- The `curse-slug` ensures proper packaging and updates via CurseForge.
-
-See also: [WIKI.md](./WIKI.md) for full documentation and API reference.

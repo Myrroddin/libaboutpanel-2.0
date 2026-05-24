@@ -31,10 +31,9 @@
 ## Category-zhCN: 函数库
 ## Category-zhTW: 函式庫
 
-## OptionalDeps: LibStub, CallbackHandler-1.0, Ace3
+## RequiredDeps: LibStub
+## OptionalDeps: Ace3
 ## IconTexture: Interface\Icons\inv_misc_book_05
 
 LibStub\LibStub.lua
-CallbackHandler-1.0\CallbackHandler-1.0.lua
-AceConfig-3.0\AceConfig-3.0.xml
 LibAboutPanel-2.0\lib.xml

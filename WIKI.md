@@ -73,8 +73,8 @@ MyAddon:AboutOptionsTable(addonName)
 LibStub("LibAboutPanel-2.0"):AboutOptionsTable(addonName)
 ```
 
-- Returns an AceConfig-3.0 options table for About info.
-- Integrates with AceConfigDialog for flexible UI placement.
+- Returns an AceConfig-3.0-compatible options table for About info.
+- Does not register the table itself; your addon registers it with AceConfig-3.0 or embeds it in an existing options table.
 
 ## Supported ToC Fields
 
@@ -131,12 +131,12 @@ To include LibAboutPanel-2.0 in your addon using CurseForge packaging, add the f
 ```yaml
 externals:
   Libs/LibStub: https://repos.curseforge.com/wow/libstub/trunk
-  Libs/CallbackHandler-1.0: https://repos.curseforge.com/wow/callbackhandler/trunk/CallbackHandler-1.0
-  Libs/AceConfig-3.0: https://repos.curseforge.com/wow/ace3/trunk/AceConfig-3.0
   Libs/LibAboutPanel-2.0:
     url: https://github.com/Myrroddin/libaboutpanel-2.0/LibAboutPanel-2.0
     curse-slug: libaboutpanel-2-0
 ```
+
+If your addon uses `:AboutOptionsTable()`, you are responsible for embedding or depending on AceConfig-3.0 in your own addon.
 
 - The `url` points to the GitHub repository for the library.
 - The `curse-slug` ensures proper packaging and updates via CurseForge.
