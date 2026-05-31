@@ -17,11 +17,6 @@
     "classic",
     "retail"
   ],
-  "globals": {
-    "read": [
-      "LibStub"
-    ]
-  },
   "diagnostics": {
     "enable": [
       "need-check-nil"

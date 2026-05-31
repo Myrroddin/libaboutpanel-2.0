@@ -4,6 +4,7 @@
 
 - [Quick Start](#quick-start)
 - [Adding LibAboutPanel-2.0 via .pkgmeta](#adding-libaboutpanel-20-via-pkgmeta)
+- [Embedding](#embedding)
 - [Ace3 Example Usage](#ace3-example-usage)
 - [API Reference](#api-reference)
 - [Supported ToC Fields](#supported-toc-fields)
@@ -16,11 +17,43 @@
 
 See the [README.md](./README.md) for integration steps, dependencies, and a brief overview.
 
+## Embedding
+
+### Ace3 addons
+
+For Ace3 addons, the recommended embedding style is to pass `LibAboutPanel-2.0` to `AceAddon-3.0:NewAddon()`:
+
+```lua
+local MyAddon = LibStub("AceAddon-3.0"):NewAddon("MyAddon", "LibAboutPanel-2.0")
+```
+
+This embeds LibAboutPanel-2.0's public API methods into your addon object.
+
+### Non-Ace3 addons
+
+For non-Ace3 addons, embed LibAboutPanel-2.0 directly:
+
+```lua
+local MyAddon = {}
+LibStub("LibAboutPanel-2.0"):Embed(MyAddon)
+```
+
+### Standalone library usage
+
+You may also use the library directly:
+
+```lua
+local LAP = LibStub("LibAboutPanel-2.0")
+LAP:CreateAboutPanel("MyAddon")
+```
+
 ## Ace3 Example Usage
 
 Below is a quick example of integrating LibAboutPanel-2.0 with Ace3 in your addon:
 
 ```lua
+local MyAddOn = LibStub("AceAddon-3.0"):NewAddon("MyAddOn", "LibAboutPanel-2.0")
+
 function MyAddOn:OnInitialize()
     local options = {
         name = "MyAddOn",
@@ -61,9 +94,11 @@ MyAddon:CreateAboutPanel(addonName, parent)
 LibStub("LibAboutPanel-2.0"):CreateAboutPanel(addonName, parent)
 ```
 
+- `addonName` is your addon's folder name, which should match your `.toc` file.
 - Adds an About panel to Blizzard's settings UI.
 - Auto-detects and displays metadata from your `.toc` file.
 - `parent` is optional; use for nested panels.
+- Returns the created or cached About panel frame.
 
 ### AceConfig-3.0 Options Table
 
@@ -73,13 +108,14 @@ MyAddon:AboutOptionsTable(addonName)
 LibStub("LibAboutPanel-2.0"):AboutOptionsTable(addonName)
 ```
 
+- `addonName` is your addon's folder name, which should match your `.toc` file.
 - Returns an AceConfig-3.0-compatible options table for About info.
 - Does not register the table itself; your addon registers it with AceConfig-3.0 or embeds it in an existing options table.
 
 ## Supported ToC Fields
 
 - Author, Title, Notes (all languages)
-- Version, X-Date, X-ReleaseDate, X-Revision
+- Version, X-Date, X-ReleaseDate, X-Project-Revision
 - X-Author-Guild, X-Author-Faction, X-Author-Server
 - X-Website, X-Email, X-Localizations, X-Credits, Category or X-Category
 - X-License, X-Copyright
@@ -109,7 +145,7 @@ the base `## Category:` value will be used.
 
 - Automatic localization for faction, locale, and common strings
 - Embedded API for easy integration
-- AceConfig-3.0 support for flexible UI placement
+- AceConfig-3.0-compatible options table support
 - Shared editbox for copying fields (email, website)
 
 ## Troubleshooting

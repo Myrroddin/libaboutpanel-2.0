@@ -1,6 +1,6 @@
 # LibAboutPanel-2.0
 
-LibAboutPanel-2.0 is a World of Warcraft Lua library for displaying addon metadata in Blizzard's Settings UI or as an AceConfig-3.0-compatible options table. It works with Classic Era, Classic, and Retail.
+LibAboutPanel-2.0 is a World of Warcraft Lua library for displaying addon metadata in Blizzard's Settings UI or as an AceConfig-3.0-compatible options table. It works with all valid WoW clients.
 
 ## Requirements
 
@@ -9,7 +9,13 @@ LibAboutPanel-2.0 is a World of Warcraft Lua library for displaying addon metada
 
 ## Quick Usage
 
-Embed the library into your addon:
+For Ace3 addons, embed LibAboutPanel-2.0 when creating your addon object:
+
+```lua
+local MyAddon = LibStub("AceAddon-3.0"):NewAddon("MyAddon", "LibAboutPanel-2.0")
+```
+
+For non-Ace3 addons, embed the library into your addon object:
 
 ```lua
 LibStub("LibAboutPanel-2.0"):Embed(MyAddon)

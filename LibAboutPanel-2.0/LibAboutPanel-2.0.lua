@@ -3,7 +3,7 @@ LibAboutPanel-2.0: WoW Lua library for displaying addon metadata in Blizzard's O
 This file contains the core implementation, inline localization table, and public API annotations.
 --]]
 
-assert(LibStub, "LibAboutPanel-2.0 requires LibStub") -- LibStub is a lightweight lib loader
+assert(LibStub, "LibAboutPanel-2.0 requires LibStub")
 
 ---@class LibAboutPanel-2.0.AceOption
 ---@field order integer
@@ -28,7 +28,7 @@ assert(LibStub, "LibAboutPanel-2.0 requires LibStub") -- LibStub is a lightweigh
 ---@field aboutTable table<string, LibAboutPanel-2.0.AceOptionsTable> Cached AceConfig-compatible options tables, keyed by addon name.
 ---@field aboutFrame table<string, LibAboutPanel-2.0.AboutFrame> Cached Blizzard Settings frames, keyed by addon name.
 ---@field editbox EditBox Shared editbox used by clickable copy fields.
----@field CreateAboutPanel fun(self: LibAboutPanel-2.0, addon: string, parent?: string): Frame
+---@field CreateAboutPanel fun(self: LibAboutPanel-2.0, addon: string, parent?: string): LibAboutPanel-2.0.AboutFrame
 ---@field AboutOptionsTable fun(self: LibAboutPanel-2.0, addon: string): LibAboutPanel-2.0.AceOptionsTable
 ---@field Embed fun(self: LibAboutPanel-2.0, target: table): table
 local lib = LibStub:NewLibrary("LibAboutPanel-2.0", 118)
@@ -358,7 +358,7 @@ end
 ---the panel is registered as a child "About" panel under that parent addon.
 ---@param addon string Addon folder/.toc name.
 ---@param parent string? Parent addon name for child panels.
----@return Frame frame The created or cached about panel frame.
+---@return LibAboutPanel-2.0.AboutFrame frame The created or cached about panel frame.
 function lib:CreateAboutPanel(addon, parent)
 	if addon == self then
 		error("LibAboutPanel-2.0: 'addon' must be the addon's folder/.toc name, not self.", 2)
@@ -370,8 +370,8 @@ function lib:CreateAboutPanel(addon, parent)
 	local frame = lib.aboutFrame[addon]
 	if frame then return frame end -- reuse cached
 
-	---@type LibAboutPanel-2.0.AboutFrame
-	frame = CreateFrame("Frame", addon.."AboutPanel", UIParent) -- UIParent makes this a global frame
+	frame = CreateFrame("Frame", addon.."AboutPanel", UIParent)
+	---@cast frame LibAboutPanel-2.0.AboutFrame
 	local title_str = frame:CreateFontString(nil, "ARTWORK", "GameFontNormalLarge")
 	title_str:SetPoint("TOPLEFT", 16, -16)
 	title_str:SetText((parent and GetTitle(addon) or addon) .. " - " .. L["About"])
