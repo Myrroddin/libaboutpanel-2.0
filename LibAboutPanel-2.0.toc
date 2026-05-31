@@ -31,8 +31,7 @@
 ## Category-zhCN: 函数库
 ## Category-zhTW: 函式庫
 
-## RequiredDeps: LibStub
-## OptionalDeps: Ace3
+## OptionalDeps: LibStub, Ace3
 ## IconTexture: Interface\Icons\inv_misc_book_05
 
 LibStub\LibStub.lua
