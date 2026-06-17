@@ -6,4 +6,6 @@ externals:
 
 ignore:
   - LibStub/tests
-  - '*.md'
+  - LibStub/LibStub.toc
+  - README.md
+  - WIKI.md
