@@ -244,9 +244,13 @@ local function GetEmail(addon)
 	local normalizedEmail = NormalizeWhitespace(email)
 	if not normalizedEmail then return end
 
-	normalizedEmail = lower(normalizedEmail)
-	normalizedEmail = gsub(normalizedEmail, "%s+at%s+", "@")
-	normalizedEmail = gsub(normalizedEmail, "%s+dot%s+", ".")
+	normalizedEmail = gsub(normalizedEmail, "%s+[aA][tT]%s+", "@")
+	normalizedEmail = gsub(normalizedEmail, "%s+[dD][oO][tT]%s+", ".")
+
+	local localPart, domain = strmatch(normalizedEmail, "^([^@]+)@([^@]+)$")
+	if localPart and domain then
+		normalizedEmail = localPart .. "@" .. lower(domain)
+	end
 
 	return "|cff77ccff" .. normalizedEmail
 end
@@ -291,9 +295,9 @@ end
 ---Creates and caches a Blizzard Settings About panel for an addon.
 ---
 ---The addon parameter should be the addon's folder/.toc name. If parent is provided,
----the panel is registered as a child "About" panel under that parent addon.
+---the panel is registered as a child "About" panel under that parent options category.
 ---@param addon string Addon folder/.toc name.
----@param parent string? Parent options category name for child panels.
+---@param parent string? Parent options category name for child panels; must already be registered.
 ---@return Frame frame The created or cached About panel frame.
 function lib:CreateAboutPanel(addon, parent)
 	if addon == self then
@@ -301,15 +305,15 @@ function lib:CreateAboutPanel(addon, parent)
 	end
 
 	addon = addon:gsub(" ", "") -- some APIs don't like spaces in addon name
-	addon = parent or addon
 
-	local frame = lib.aboutFrame[addon]
+	local cacheKey = parent or addon
+	local frame = lib.aboutFrame[cacheKey]
 	if frame then return frame end -- reuse cached
 
 	frame = CreateFrame("Frame", addon.."AboutPanel", UIParent)
 	local title_str = frame:CreateFontString(nil, "ARTWORK", "GameFontNormalLarge")
 	title_str:SetPoint("TOPLEFT", 16, -16)
-	title_str:SetText((parent and GetTitle(addon) or addon) .. " - " .. L["About"])
+	title_str:SetText(((parent and GetTitle(addon)) or addon) .. " - " .. L["About"])
 
 	-- Add notes paragraph if present.
 	local notes = GetNotes(addon)
@@ -368,9 +372,21 @@ function lib:CreateAboutPanel(addon, parent)
 	-- Register with Blizzard's modern Settings system.
 	frame.name = not parent and addon or L["About"]
 	frame.parent = parent
-	Settings.RegisterCanvasLayoutCategory(frame)
 
-	lib.aboutFrame[addon] = frame
+	local category
+	if parent then
+		local parentCategory = Settings.GetCategory(parent)
+		if not parentCategory then
+			error(format("LibAboutPanel-2.0: parent settings category %q is not registered.", parent), 2)
+		end
+		category = Settings.RegisterCanvasLayoutSubcategory(parentCategory, frame, frame.name)
+	else
+		category = Settings.RegisterCanvasLayoutCategory(frame, frame.name)
+		Settings.RegisterAddOnCategory(category)
+	end
+	category.ID = frame.name
+
+	lib.aboutFrame[cacheKey] = frame
 	return frame
 end
 
