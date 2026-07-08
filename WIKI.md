@@ -168,7 +168,7 @@ To include LibAboutPanel-2.0 in your addon using CurseForge packaging, add the f
 externals:
   Libs/LibStub: https://repos.curseforge.com/wow/libstub/trunk
   Libs/LibAboutPanel-2.0:
-    url: https://github.com/Myrroddin/libaboutpanel-2.0/LibAboutPanel-2.0
+    url: https://github.com/Myrroddin/libaboutpanel-2.0.git/LibAboutPanel-2.0
     curse-slug: libaboutpanel-2-0
 ```
 
