@@ -5,7 +5,7 @@ This file contains the core implementation, inline localization table, and publi
 
 assert(LibStub, "LibAboutPanel-2.0 requires LibStub")
 
-local lib = LibStub:NewLibrary("LibAboutPanel-2.0", 118)
+local lib = LibStub:NewLibrary("LibAboutPanel-2.0", 119)
 if not lib then return end
 
 -- Localize frequently used Lua and WoW API functions for performance.

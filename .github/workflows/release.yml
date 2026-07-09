@@ -24,10 +24,9 @@ jobs:
     # specify the environment variables used by the packager, matching the secrets from the project on GitHub
     env:
       WAGO_API_TOKEN: ${{ secrets.WAGO_API_TOKEN }}
-      CF_API_KEY: ${{ secrets.CF_API_KEY }}
+      CF_API_TOKEN: ${{ secrets.CF_API_TOKEN }}
       WOWI_API_TOKEN: ${{ secrets.WOWI_API_TOKEN }}
-      GITHUB_OAUTH: ${{ secrets.GITHUB_TOKEN }}  # "GITHUB_TOKEN" is a secret always provided to the workflow
-                                                 # for your own token, the name cannot start with "GITHUB_"
+      GITHUB_API_TOKEN: ${{ github.token }}
 
     # "steps" holds a list of all the steps needed to package and release our AddOn
     steps:
