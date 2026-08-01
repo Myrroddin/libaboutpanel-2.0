@@ -216,7 +216,6 @@ local function Trim(input)
 end
 
 -- Normalizes whitespace and removes hidden newline characters.
----@param input string?
 local function NormalizeWhitespace(input)
 	if not input then return end
 
