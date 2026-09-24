@@ -1,4 +1,4 @@
-## Interface: 120100, 50504, 38002, 20506, 11509
+## Interface: 120100, 50504, 38002, 20506, 16001, 11509
 ## Title: Lib: AboutPanel-2.0
 ## Notes: Adds an AddOn's ToC fields to its options table
 ## Notes-deDE: Fügt die ToC-Felder eines Addons zu seiner Options-Tabelle hinzu
@@ -31,7 +31,7 @@
 ## Category-zhCN: 函数库
 ## Category-zhTW: 函式庫
 
-## OptionalDeps: LibStub, Ace3
+## OptionalDeps: Ace3
 ## IconTexture: Interface\Icons\inv_misc_book_05
 
 LibStub\LibStub.lua
