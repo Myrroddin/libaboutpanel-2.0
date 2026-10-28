@@ -15,11 +15,15 @@ local GetLocale, CreateFrame = GetLocale, CreateFrame
 local GetAddOnMetadata = C_AddOns.GetAddOnMetadata -- retrieves .toc metadata like Title, Notes, Author, etc.
 
 -- Localization shim: returns the key itself if no translation exists.
+-- As in AceLocale, a translation set to true means "same as the key".
 local L = setmetatable({}, {
 	__index = function(t, k)
 		local v = tostring(k)
 		rawset(t, k, v)
 		return v
+	end,
+	__newindex = function(t, k, v)
+		rawset(t, k, v == true and tostring(k) or v)
 	end
 })
 
