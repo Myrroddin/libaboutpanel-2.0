@@ -142,7 +142,7 @@ elseif locale == "ruRU" then
 	L["Copyright"] = "Авторские права"
 	L["Credits"] = "Благодарности"
 	L["Date"] = "Дата"
-	L["Developer Build"] = "Разработческая версия"
+	L["Developer Build"] = "Версия для разработчиков"
 	L["Email"] = "Эл. почта"
 	L["License"] = "Лицензия"
 	L["Localizations"] = "Локализации"
